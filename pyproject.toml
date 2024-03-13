@@ -32,3 +32,11 @@ Documentation = "https://github.com/jopppis/gnss-visualizer"
 Repository = "https://github.com/jopppis/gnss-visualizer.git"
 "Bug Tracker" = "https://github.com/jopppis/gnss-visualizer/issues"
 Changelog = "https://github.com/jopppis/gnss-visualizer/blob/main/CHANGELOG.md"
+
+[tool]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gnss_visualizer"]
+
+[project.scripts]
+gnss-visualizer = "gnss_visualizer.__main__:main"
