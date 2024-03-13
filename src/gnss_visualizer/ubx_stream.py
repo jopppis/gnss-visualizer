@@ -71,11 +71,16 @@ class UbxStreamReader:
 
             # check the message type
             msg_str = pyubx2.UBX_MSGIDS[msg.msg_cls + msg.msg_id]
+            sleep_time = 0.0
             if msg_str in self.plot_handler.required_msgs:
                 self._read_msg(msg, msg_str)
-            if msg_str == "NAV-PVT" and self.simulate_wait_s is not None:
-                LOGGER.info(f"Simulating wait of {self.simulate_wait_s} s")
-                sleep(self.simulate_wait_s)
+                if msg_str == "NAV-PVT" and self.simulate_wait_s is not None:
+                    LOGGER.info(f"Simulating wait of {self.simulate_wait_s} s")
+                    sleep_time = self.simulate_wait_s
+                else:
+                    sleep_time = 0.1
+            if sleep_time:
+                sleep(sleep_time)
 
     def _read_msg(self, msg: pyubx2.UBXMessage, msg_str: str) -> None:
         """Read UBX message."""
