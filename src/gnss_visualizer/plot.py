@@ -25,8 +25,8 @@ class PlotHandler:
     MAP_PLOT_HEIGHT = 400
     SPACER_HEIGHT = 30
 
-    DEFAULT_MAP_TOOLS = "pan,wheel_zoom,box_zoom,undo,redo,reset"
-    DEFAULT_TOOLS = "pan,wheel_zoom,box_zoom,undo,redo,reset"
+    DEFAULT_MAP_TOOLS = "pan,wheel_zoom,zoom_out,box_zoom,undo,redo,reset"
+    DEFAULT_TOOLS = "pan,wheel_zoom,zoom_out,box_zoom,undo,redo,reset"
 
     def __init__(self, doc: Document):
         """Initialize an instance."""
@@ -176,16 +176,34 @@ class PlotHandler:
         if plot.plot is None or plot.datasource is None:
             plot.init(ColumnDataSource(data=data))
         else:
-            plot.datasource.patch(
-                dict(
-                    y=([(slice(None), data["y"])]),
-                    x=([(slice(None), data["x"])]),
-                    color=([(slice(None), data["color"])]),
-                )
-            )
+            plot.datasource.data = data
             plot.plot.x_range.factors = self._sort_rinex_sv_ids(
                 set(list(plot.plot.x_range.factors) + data["x"])
             )
+
+    def _add_plot_to_column(self, plot: Plot) -> None:
+        """Add plot to column.
+
+        Regenerate entire column by adding all plots to the column.
+
+        Also set the new plot as visible.
+
+        Set the column order based on priority. Higher priority values go
+        before lower values.
+        """
+        if plot.plot is None or plot.visible:
+            return
+
+        plot.visible = True
+
+        plots_to_add = [
+            plot for plot in self.plots if plot.visible and plot.plot is not None
+        ]
+        plots_prioritized = sorted(plots_to_add, key=lambda x: x.priority, reverse=True)
+
+        for plot in plots_prioritized:
+            self.column.children.append(plot.plot)
+            self.column.children.append(Spacer(height=self.SPACER_HEIGHT))
 
     def _generate_pos_map(self, datasource: ColumnDataSource) -> None:
         """Plot position on a map."""
@@ -218,8 +236,7 @@ class PlotHandler:
         self._set_plot_styles(p)
         plot.datasource = datasource
         plot.plot = p
-        self.column.children.append(Spacer(height=self.SPACER_HEIGHT))
-        self.column.children.append(p)
+        self._add_plot_to_column(plot)
 
     def _generate_sv_cno(self, datasource: ColumnDataSource) -> None:
         """Generate plot for C/N0 values.
@@ -249,5 +266,4 @@ class PlotHandler:
         self._set_plot_styles(p)
         plot.datasource = datasource
         plot.plot = p
-        self.column.children.append(Spacer(height=self.SPACER_HEIGHT))
-        self.column.children.append(p)
+        self._add_plot_to_column(plot)

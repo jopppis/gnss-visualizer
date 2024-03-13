@@ -43,24 +43,14 @@ class UbxStreamReader:
         """Read UBX from a device."""
         LOGGER.info(f"Reading UBX from device {self.file}")
 
-        def read_from_serial():
-            """Attempt to read from serial device."""
-            with Serial(str(self.file), 38400, timeout=3) as ser:
-                self._read_ubx_stream(ser)
-
         # try reading from device few times
-        try_max = 10
-        for try_ix in range(try_max):
+        while True:
             try:
-                read_from_serial()
-                return
-            except SerialException:
-                LOGGER.warning(
-                    "Failed to read from %s, try %i/%i", self.file, try_ix, try_max
-                )
+                with Serial(str(self.file), 38400, timeout=3) as ser:
+                    self._read_ubx_stream(ser)
+            except SerialException as e:
+                LOGGER.error(f"Serial exception: {e}")
                 sleep(1)
-
-        raise SerialException(f"Failed to read from {self.file}")
 
     def _read_ubx_stream(self, stream: io.IOBase) -> None:
         """Read UBX stream from a stream."""
@@ -71,6 +61,7 @@ class UbxStreamReader:
                 return
             # make sure the result is ubx
             if not isinstance(msg, pyubx2.UBXMessage):
+                LOGGER.info(f"Message is not UBX: {msg}")
                 continue
 
             # check the message type
