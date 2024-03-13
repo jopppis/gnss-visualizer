@@ -1,13 +1,14 @@
 """Generate plots."""
 
 import logging
+from math import isnan
 from typing import Any, Callable, Iterable
 
 import pyubx2
 import xyzservices.providers as xyz
 from bokeh.document import Document
 from bokeh.layouts import Spacer, column
-from bokeh.models import ColumnDataSource
+from bokeh.models import ColumnDataSource, CustomAction
 from bokeh.plotting import figure
 
 from gnss_visualizer.constants import RINEX_CONSTELLATION_COLORS, UBX_GNSSID_TO_RINEX
@@ -35,6 +36,8 @@ class PlotHandler:
         self.column = column()
 
         self.doc.add_root(self.column)
+
+        self._map_centered = True
 
         self.plots = []
         self.plots.append(
@@ -109,6 +112,46 @@ class PlotHandler:
 
         plot.toolbar.autohide = True
 
+    def _center_map(self, plot: Plot) -> None:
+        """Center map on the current position."""
+        if plot.datasource is None or plot.plot is None:
+            return
+        hacc = plot.datasource.data["h_acc"][0]
+
+        if hacc is None:
+            return
+
+        # current plot range
+        dx_orig = (plot.plot.x_range.end - plot.plot.x_range.start) / 2
+        dy_orig = (plot.plot.y_range.end - plot.plot.y_range.start) / 2
+
+        aspect_ratio = dy_orig / dx_orig
+        if isnan(aspect_ratio):
+            aspect_ratio = 1
+
+        # set x scale based on the horizontal accuracy
+        if hacc > 1000:
+            dx = 100.0
+        elif hacc > 100:
+            dx = 10 * 1e3
+        elif hacc > 10 or isnan(dx_orig):
+            dx = 1e3
+        else:
+            # keep the old range
+            dx = dx_orig
+
+        dy = dx * aspect_ratio
+        plot.plot.x_range.update(
+            start=plot.datasource.data["x"][0] - dx,
+            end=plot.datasource.data["x"][0] + dx,
+        )
+        plot.plot.y_range.update(
+            start=plot.datasource.data["y"][0] - dy,
+            end=plot.datasource.data["y"][0] + dy,
+        )
+
+        LOGGER.debug("Centered map with dx: %s, dy: %s", dx, dy)
+
     async def _update_pos_map(self, msg: pyubx2.UBXMessage) -> None:
         """Update position on a map."""
         LOGGER.info("Process position map plot")
@@ -122,29 +165,15 @@ class PlotHandler:
         if lat is None or lon is None:
             return
 
-        LOGGER.debug(f"Lat: {lat}, Lon: {lon}")
+        LOGGER.debug(f"Lat: {lat}, Lon: {lon}, hAcc: {h_acc}")
 
         x, y = lat_lon_to_web_mercator(lat, lon)
         data = dict(x=[x], y=[y], h_acc=[h_acc])
-
         if plot.plot is None or plot.datasource is None:
             plot.init(ColumnDataSource(data=data))
         else:
-            plot.datasource.patch(
-                dict(x=[(slice(None), data["x"])], y=[(slice(None), data["y"])])
-            )
-            dx = (plot.plot.x_range.end - plot.plot.x_range.start) / 2
-            dy = (plot.plot.y_range.end - plot.plot.y_range.start) / 2
-            (
-                plot.plot.x_range.update(
-                    start=plot.datasource.data["x"][0] - dx,
-                    end=plot.datasource.data["x"][0] + dx,
-                ),
-            )
-            plot.plot.y_range.update(
-                start=plot.datasource.data["y"][0] - dy,
-                end=plot.datasource.data["y"][0] + dy,
-            )
+            plot.datasource.data = data
+            self._center_map(plot)
 
     async def _update_sv_cno(self, msg: pyubx2.UBXMessage) -> None:
         """Handle SV C/N0 plot."""
@@ -214,8 +243,8 @@ class PlotHandler:
             height=self.MAP_PLOT_HEIGHT,
             width=self.DEFAULT_PLOT_WIDTH,
             title="Sijainti",
-            x_range=(datasource.data["x"][0] - 100, datasource.data["x"][0] + 100),
-            y_range=(datasource.data["y"][0] - 100, datasource.data["y"][0] + 100),
+            x_range=(datasource.data["x"][0] - 1e3, datasource.data["x"][0] + 1e3),
+            y_range=(datasource.data["y"][0] - 1e3, datasource.data["y"][0] + 1e3),
             x_axis_type="mercator",
             y_axis_type="mercator",
             tools=self.DEFAULT_MAP_TOOLS,
@@ -233,10 +262,18 @@ class PlotHandler:
             x="x", y="y", size=15, fill_color="#d62728", fill_alpha=1, source=datasource
         )
 
+        center_tool = CustomAction(icon="crosshair", description="Center")
+        center_tool.on_event("menu_item_click", self._center_map_toggle)
+        p.add_tools(center_tool)
+
         self._set_plot_styles(p)
         plot.datasource = datasource
         plot.plot = p
         self._add_plot_to_column(plot)
+
+    def _center_map_toggle(self) -> None:
+        """Toggle map centering."""
+        self._map_centered = not self._map_centered
 
     def _generate_sv_cno(self, datasource: ColumnDataSource) -> None:
         """Generate plot for C/N0 values.
