@@ -31,32 +31,36 @@ class UbxStreamReader:
             self._read_ubx_file()
             return
 
-        # try reading from device few times
-        try_count = 0
-        try_max = 10
-        while try_count < try_max:
-            try:
-                return self._read_ubx_device()
-            except SerialException:
-                try_count += 1
-                LOGGER.warning(
-                    "Failed to read from %s, try %i/%i", self.file, try_count, try_max
-                )
-                sleep(1)
-        if try_count == try_max:
-            raise SerialException(f"Failed to read from {self.file}")
+        self._read_ubx_device()
 
     def _read_ubx_file(self) -> None:
         """Read UBX from a file."""
-        LOGGER.info(f"Reading UBX from {self.file}")
+        LOGGER.info(f"Reading UBX from file {self.file}")
         with self.file.open("rb") as f:
-            return self._read_ubx_stream(f)
+            self._read_ubx_stream(f)
 
     def _read_ubx_device(self) -> None:
         """Read UBX from a device."""
-        LOGGER.info(f"Reading UBX from {self.file}")
-        with Serial(str(self.file), 38400, timeout=3) as ser:
-            return self._read_ubx_stream(ser)
+        LOGGER.info(f"Reading UBX from device {self.file}")
+
+        def read_from_serial():
+            """Attempt to read from serial device."""
+            with Serial(str(self.file), 38400, timeout=3) as ser:
+                self._read_ubx_stream(ser)
+
+        # try reading from device few times
+        try_max = 10
+        for try_ix in range(try_max):
+            try:
+                read_from_serial()
+                return
+            except SerialException:
+                LOGGER.warning(
+                    "Failed to read from %s, try %i/%i", self.file, try_ix, try_max
+                )
+                sleep(1)
+
+        raise SerialException(f"Failed to read from {self.file}")
 
     def _read_ubx_stream(self, stream: io.IOBase) -> None:
         """Read UBX stream from a stream."""
@@ -71,16 +75,12 @@ class UbxStreamReader:
 
             # check the message type
             msg_str = pyubx2.UBX_MSGIDS[msg.msg_cls + msg.msg_id]
-            sleep_time = 0.0
             if msg_str in self.plot_handler.required_msgs:
                 self._read_msg(msg, msg_str)
-                if msg_str == "NAV-PVT" and self.simulate_wait_s is not None:
-                    LOGGER.info(f"Simulating wait of {self.simulate_wait_s} s")
-                    sleep_time = self.simulate_wait_s
-                else:
-                    sleep_time = 0.1
-            if sleep_time:
-                sleep(sleep_time)
+
+            if msg_str == "NAV-PVT" and self.simulate_wait_s is not None:
+                LOGGER.info(f"Simulating wait of {self.simulate_wait_s} s")
+                sleep(self.simulate_wait_s)
 
     def _read_msg(self, msg: pyubx2.UBXMessage, msg_str: str) -> None:
         """Read UBX message."""
