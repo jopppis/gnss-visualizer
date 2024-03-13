@@ -71,7 +71,6 @@ def main():
 
     thread = Thread(target=stream_reader.read)
     thread.start()
-    LOGGER.info("Started UBX stream reader.")
 
 
 main()
