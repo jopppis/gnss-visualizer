@@ -26,8 +26,8 @@ class PlotHandler:
     MAP_PLOT_HEIGHT = 380
     SPACER_HEIGHT = 25
 
-    DEFAULT_MAP_TOOLS = "pan,wheel_zoom,zoom_out,box_zoom,undo,redo,reset"
-    DEFAULT_TOOLS = "pan,wheel_zoom,zoom_out,box_zoom,undo,redo,reset"
+    DEFAULT_MAP_TOOLS = "pan,wheel_zoom,zoom_out,box_zoom,hover,undo,redo,reset"
+    DEFAULT_TOOLS = "pan,wheel_zoom,zoom_out,box_zoom,hover,undo,redo,reset"
 
     def __init__(self, doc: Document):
         """Initialize an instance."""
@@ -169,7 +169,7 @@ class PlotHandler:
         LOGGER.debug(f"Lat: {lat}, Lon: {lon}, hAcc: {h_acc}")
 
         x, y = lat_lon_to_web_mercator(lat, lon)
-        data = dict(x=[x], y=[y], h_acc=[h_acc])
+        data = dict(x=[x], y=[y], h_acc=[h_acc], lat=[lat], lon=[lon])
         if plot.plot is None or plot.datasource is None:
             plot.init(ColumnDataSource(data=data))
         else:
@@ -240,6 +240,12 @@ class PlotHandler:
         LOGGER.info("Generate position map plot")
         plot = self.get_plot("pos_map")
 
+        tooltip = [
+            ("Leveysaste", "@{lat}°"),
+            ("Pituusaste", "@{lon}°"),
+            ("Tarkkuus", "@h_acc m"),
+        ]
+
         p = figure(
             height=self.MAP_PLOT_HEIGHT,
             width=self.DEFAULT_PLOT_WIDTH,
@@ -249,6 +255,7 @@ class PlotHandler:
             x_axis_type="mercator",
             y_axis_type="mercator",
             tools=self.DEFAULT_MAP_TOOLS,
+            tooltips=tooltip,
         )
         p.add_tile(xyz.OpenStreetMap.Mapnik)
         p.circle(
@@ -269,6 +276,15 @@ class PlotHandler:
             button_type="success",
             active=True,
         )
+
+        def center_map_click(_) -> None:
+            """Change apperance of center map button upon a click."""
+            if self._center_map_toggle.active:
+                self._center_map_toggle.button_type = "success"
+            else:
+                self._center_map_toggle.button_type = "default"
+
+        self._center_map_toggle.on_click(center_map_click)
 
         self._set_plot_styles(p)
         plot.datasource = datasource
@@ -291,11 +307,20 @@ class PlotHandler:
         LOGGER.info("Generate SV C/N0 plot")
         plot = self.get_plot("sv_cno")
 
+        y_label = "C/N0 [dBHz]"
+        x_label = "Satelliitti"
+
+        tooltip = [
+            (x_label, "@x"),
+            (y_label, "@y"),
+        ]
+
         p = figure(
             height=self.DEFAULT_PLOT_HEIGHT,
             width=self.DEFAULT_PLOT_WIDTH,
             title="Signaalin voimakkuus",
             tools=self.DEFAULT_TOOLS,
+            tooltips=tooltip,
             x_range=self._sort_rinex_sv_ids(datasource.data["x"]),
         )
 
@@ -305,8 +330,8 @@ class PlotHandler:
         p.y_range.end = 64
         p.xaxis.major_label_orientation = 3.14 / 4
 
-        p.yaxis.axis_label = "C/N0 [dBHz]"
-        p.xaxis.axis_label = "Satelliitti"
+        p.yaxis.axis_label = y_label
+        p.xaxis.axis_label = x_label
 
         self._set_plot_styles(p)
         plot.datasource = datasource
