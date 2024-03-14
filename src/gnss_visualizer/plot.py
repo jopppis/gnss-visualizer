@@ -21,7 +21,6 @@ LOGGER = logging.getLogger(__name__)
 class PlotHandler:
     """Generate plots from GNSS receiver messages."""
 
-    DEFAULT_PLOT_WIDTH = 1200
     DEFAULT_PLOT_HEIGHT = 400
     MAP_PLOT_HEIGHT = 380
     SPACER_HEIGHT = 25
@@ -33,9 +32,10 @@ class PlotHandler:
         """Initialize an instance."""
         self.doc = doc
 
-        self.column = column()
+        self.column = column(sizing_mode="stretch_width")
+        root_row = row(self.column, Spacer(width=200), sizing_mode="stretch_width")
 
-        self.doc.add_root(self.column)
+        self.doc.add_root(root_row)
 
         self.plots = []
         self.plots.append(
@@ -126,7 +126,7 @@ class PlotHandler:
         # current plot range
         dx_orig = (plot.plot.x_range.end - plot.plot.x_range.start) / 2
 
-        aspect_ratio = plot.plot.height / plot.plot.width
+        aspect_ratio = plot.plot.inner_height / plot.plot.inner_width
 
         # set x scale based on the horizontal accuracy
         if hacc > 10000:
@@ -248,7 +248,6 @@ class PlotHandler:
 
         p = figure(
             height=self.MAP_PLOT_HEIGHT,
-            width=self.DEFAULT_PLOT_WIDTH,
             title="Sijainti",
             x_range=(datasource.data["x"][0] - 1e3, datasource.data["x"][0] + 1e3),
             y_range=(datasource.data["y"][0] - 1e3, datasource.data["y"][0] + 1e3),
@@ -256,6 +255,7 @@ class PlotHandler:
             y_axis_type="mercator",
             tools=self.DEFAULT_MAP_TOOLS,
             tooltips=tooltip,
+            sizing_mode="inherit",
         )
         p.add_tile(xyz.OpenStreetMap.Mapnik)
         p.circle(
@@ -296,6 +296,7 @@ class PlotHandler:
                 self._center_map_toggle,
                 sizing_mode="stretch_width",
             ),
+            sizing_mode="inherit",
         )
         self._add_plot_to_column(plot)
 
@@ -317,11 +318,11 @@ class PlotHandler:
 
         p = figure(
             height=self.DEFAULT_PLOT_HEIGHT,
-            width=self.DEFAULT_PLOT_WIDTH,
             title="Signaalin voimakkuus",
             tools=self.DEFAULT_TOOLS,
             tooltips=tooltip,
             x_range=self._sort_rinex_sv_ids(datasource.data["x"]),
+            sizing_mode="inherit",
         )
 
         p.vbar(x="x", top="y", source=datasource, width=0.9, color="color")
