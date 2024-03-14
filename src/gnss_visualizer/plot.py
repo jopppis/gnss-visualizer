@@ -7,8 +7,8 @@ from typing import Any, Callable, Iterable
 import pyubx2
 import xyzservices.providers as xyz
 from bokeh.document import Document
-from bokeh.layouts import Spacer, column
-from bokeh.models import ColumnDataSource, CustomAction
+from bokeh.layouts import Spacer, column, row
+from bokeh.models import ColumnDataSource, Toggle
 from bokeh.plotting import figure
 
 from gnss_visualizer.constants import RINEX_CONSTELLATION_COLORS, UBX_GNSSID_TO_RINEX
@@ -22,9 +22,9 @@ class PlotHandler:
     """Generate plots from GNSS receiver messages."""
 
     DEFAULT_PLOT_WIDTH = 1200
-    DEFAULT_PLOT_HEIGHT = 500
-    MAP_PLOT_HEIGHT = 400
-    SPACER_HEIGHT = 30
+    DEFAULT_PLOT_HEIGHT = 400
+    MAP_PLOT_HEIGHT = 380
+    SPACER_HEIGHT = 25
 
     DEFAULT_MAP_TOOLS = "pan,wheel_zoom,zoom_out,box_zoom,undo,redo,reset"
     DEFAULT_TOOLS = "pan,wheel_zoom,zoom_out,box_zoom,undo,redo,reset"
@@ -36,8 +36,6 @@ class PlotHandler:
         self.column = column()
 
         self.doc.add_root(self.column)
-
-        self._map_centered = True
 
         self.plots = []
         self.plots.append(
@@ -114,7 +112,11 @@ class PlotHandler:
 
     def _center_map(self, plot: Plot) -> None:
         """Center map on the current position."""
-        if plot.datasource is None or plot.plot is None:
+        if (
+            not self._center_map_toggle.active
+            or plot.datasource is None
+            or plot.plot is None
+        ):
             return
         hacc = plot.datasource.data["h_acc"][0]
 
@@ -123,18 +125,17 @@ class PlotHandler:
 
         # current plot range
         dx_orig = (plot.plot.x_range.end - plot.plot.x_range.start) / 2
-        dy_orig = (plot.plot.y_range.end - plot.plot.y_range.start) / 2
 
-        aspect_ratio = dy_orig / dx_orig
-        if isnan(aspect_ratio):
-            aspect_ratio = 1
+        aspect_ratio = plot.plot.height / plot.plot.width
 
         # set x scale based on the horizontal accuracy
-        if hacc > 1000:
-            dx = 100.0
+        if hacc > 10000:
+            dx = 10000.0 * 1e3
+        elif hacc > 1000:
+            dx = 100.0 * 1e3
         elif hacc > 100:
             dx = 10 * 1e3
-        elif hacc > 10 or isnan(dx_orig):
+        elif hacc > 50 or isnan(dx_orig):
             dx = 1e3
         else:
             # keep the old range
@@ -231,7 +232,7 @@ class PlotHandler:
         plots_prioritized = sorted(plots_to_add, key=lambda x: x.priority, reverse=True)
 
         for plot in plots_prioritized:
-            self.column.children.append(plot.plot)
+            self.column.children.append(plot.layout_item)
             self.column.children.append(Spacer(height=self.SPACER_HEIGHT))
 
     def _generate_pos_map(self, datasource: ColumnDataSource) -> None:
@@ -262,18 +263,25 @@ class PlotHandler:
             x="x", y="y", size=15, fill_color="#d62728", fill_alpha=1, source=datasource
         )
 
-        center_tool = CustomAction(icon="crosshair", description="Center")
-        center_tool.on_event("menu_item_click", self._center_map_toggle)
-        p.add_tools(center_tool)
+        # create button that toggles map_centering and changes color based on the state of the centering
+        self._center_map_toggle = Toggle(
+            label="Keskitä kartta",
+            button_type="success",
+            active=True,
+        )
 
         self._set_plot_styles(p)
         plot.datasource = datasource
         plot.plot = p
+        plot.column = column(
+            plot.plot,
+            row(
+                Spacer(sizing_mode="stretch_width"),
+                self._center_map_toggle,
+                sizing_mode="stretch_width",
+            ),
+        )
         self._add_plot_to_column(plot)
-
-    def _center_map_toggle(self) -> None:
-        """Toggle map centering."""
-        self._map_centered = not self._map_centered
 
     def _generate_sv_cno(self, datasource: ColumnDataSource) -> None:
         """Generate plot for C/N0 values.

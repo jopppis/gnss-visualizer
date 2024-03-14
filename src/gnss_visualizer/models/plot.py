@@ -3,7 +3,7 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from bokeh.models import ColumnDataSource
+from bokeh.models import Column, ColumnDataSource
 from bokeh.plotting import figure
 
 
@@ -18,3 +18,12 @@ class Plot:
     visible: bool = False
     datasource: ColumnDataSource | None = None
     plot: figure | None = None
+    column: Column | None = None
+
+    @property
+    def layout_item(self) -> Column | figure:
+        """Get layout item."""
+        if self.column:
+            return self.column
+        else:
+            return self.plot
