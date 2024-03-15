@@ -289,13 +289,9 @@ class PlotHandler:
         self._set_plot_styles(p)
         plot.datasource = datasource
         plot.plot = p
-        plot.column = column(
+        plot.layout = row(
             plot.plot,
-            row(
-                Spacer(sizing_mode="stretch_width"),
-                self._center_map_toggle,
-                sizing_mode="stretch_width",
-            ),
+            self._center_map_toggle,
             sizing_mode="inherit",
         )
         self._add_plot_to_column(plot)
