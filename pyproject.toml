@@ -6,9 +6,11 @@ build-backend = "hatchling.build"
 name = "gnss-visualizer"
 version = "0.0.1"
 dependencies = [
+  "pyubx2",
   "bokeh",
-  "pynmeagps",
-  "click",
+  "pyserial",
+  "xyzservices",
+  "pyproj",
 ]
 requires-python = ">=3.11"
 authors = [
