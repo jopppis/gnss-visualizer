@@ -32,8 +32,14 @@ class PlotHandler:
         """Initialize an instance."""
         self.doc = doc
 
-        self.column = column(sizing_mode="stretch_width")
-        root_row = row(self.column, Spacer(width=200), sizing_mode="stretch_width")
+        self._main_column = column(sizing_mode="stretch_width")
+        self._side_column = column()
+        root_row = row(
+            self._main_column,
+            self._side_column,
+            Spacer(width=100),
+            sizing_mode="stretch_width",
+        )
 
         self.doc.add_root(root_row)
 
@@ -43,6 +49,7 @@ class PlotHandler:
                 id="pos_map",
                 init=self._generate_pos_map,
                 messages={"NAV-PVT": self._update_pos_map},
+                priority=1,
             )
         )
         self.plots.append(
@@ -232,8 +239,10 @@ class PlotHandler:
         plots_prioritized = sorted(plots_to_add, key=lambda x: x.priority, reverse=True)
 
         for plot in plots_prioritized:
-            self.column.children.append(plot.layout_item)
-            self.column.children.append(Spacer(height=self.SPACER_HEIGHT))
+            self._main_column.children.append(plot.main_layout)
+            self._main_column.children.append(Spacer(height=self.SPACER_HEIGHT))
+            self._side_column.children.append(plot.side_layout)
+            self._side_column.children.append(Spacer(height=self.SPACER_HEIGHT))
 
     def _generate_pos_map(self, datasource: ColumnDataSource) -> None:
         """Plot position on a map."""
@@ -289,10 +298,10 @@ class PlotHandler:
         self._set_plot_styles(p)
         plot.datasource = datasource
         plot.figure = p
-        plot.layout = row(
-            plot.figure,
+        plot.side_layout = column(
+            Spacer(height=40, sizing_mode="fixed"),
             self._center_map_toggle,
-            sizing_mode="inherit",
+            height=self.MAP_PLOT_HEIGHT,
         )
         self._add_plot_to_column(plot)
 
