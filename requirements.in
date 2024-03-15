@@ -1,11 +1,5 @@
--e .
 pyubx2
 bokeh
 pyserial
-click
-pip
-ipdb
-ipython
 xyzservices
-mypy
 pyproj
