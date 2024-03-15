@@ -8,7 +8,7 @@ import pyubx2
 import xyzservices.providers as xyz
 from bokeh.document import Document
 from bokeh.layouts import Spacer, column, row
-from bokeh.models import ColumnDataSource, Toggle
+from bokeh.models import ColumnDataSource, Div, Toggle
 from bokeh.plotting import figure
 
 from gnss_visualizer.constants import RINEX_CONSTELLATION_COLORS, UBX_GNSSID_TO_RINEX
@@ -28,20 +28,33 @@ class PlotHandler:
     DEFAULT_MAP_TOOLS = "pan,wheel_zoom,zoom_out,box_zoom,hover,undo,redo,reset"
     DEFAULT_TOOLS = "pan,wheel_zoom,zoom_out,box_zoom,hover,undo,redo,reset"
 
+    TITLE = "Satelliittipaikannin"
+
     def __init__(self, doc: Document):
         """Initialize an instance."""
         self.doc = doc
 
         self._main_column = column(sizing_mode="stretch_width")
         self._side_column = column()
+
+        title_div = Div(
+            text=f"<h1>{self.TITLE}</h1>",
+            styles={
+                "text-align": "center",
+            },
+            height=20,
+            sizing_mode="stretch_width",
+        )
+
         root_row = row(
             self._main_column,
             self._side_column,
             Spacer(width=100),
             sizing_mode="stretch_width",
         )
+        root_column = column(title_div, root_row, sizing_mode="stretch_width")
 
-        self.doc.add_root(root_row)
+        self.doc.add_root(root_column)
 
         self.plots = []
         self.plots.append(
