@@ -3,8 +3,8 @@
 from collections.abc import Callable
 from dataclasses import dataclass
 
+import bokeh.plotting
 from bokeh.models import ColumnDataSource, LayoutDOM
-from bokeh.plotting import figure
 
 
 @dataclass
@@ -17,7 +17,7 @@ class Plot:
     priority: int = -1
     visible: bool = False
     datasource: ColumnDataSource | None = None
-    plot: figure | None = None
+    figure: bokeh.plotting.figure | None = None
     layout: LayoutDOM | None = None
 
     @property
@@ -26,4 +26,4 @@ class Plot:
         if self.layout:
             return self.layout
         else:
-            return self.plot
+            return self.figure

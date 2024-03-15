@@ -115,7 +115,7 @@ class PlotHandler:
         if (
             not self._center_map_toggle.active
             or plot.datasource is None
-            or plot.plot is None
+            or plot.figure is None
         ):
             return
         hacc = plot.datasource.data["h_acc"][0]
@@ -124,9 +124,9 @@ class PlotHandler:
             return
 
         # current plot range
-        dx_orig = (plot.plot.x_range.end - plot.plot.x_range.start) / 2
+        dx_orig = (plot.figure.x_range.end - plot.figure.x_range.start) / 2
 
-        aspect_ratio = plot.plot.inner_height / plot.plot.inner_width
+        aspect_ratio = plot.figure.inner_height / plot.figure.inner_width
 
         # set x scale based on the horizontal accuracy
         if hacc > 10000:
@@ -142,11 +142,11 @@ class PlotHandler:
             dx = dx_orig
 
         dy = dx * aspect_ratio
-        plot.plot.x_range.update(
+        plot.figure.x_range.update(
             start=plot.datasource.data["x"][0] - dx,
             end=plot.datasource.data["x"][0] + dx,
         )
-        plot.plot.y_range.update(
+        plot.figure.y_range.update(
             start=plot.datasource.data["y"][0] - dy,
             end=plot.datasource.data["y"][0] + dy,
         )
@@ -170,7 +170,7 @@ class PlotHandler:
 
         x, y = lat_lon_to_web_mercator(lat, lon)
         data = dict(x=[x], y=[y], h_acc=[h_acc], lat=[lat], lon=[lon])
-        if plot.plot is None or plot.datasource is None:
+        if plot.figure is None or plot.datasource is None:
             plot.init(ColumnDataSource(data=data))
         else:
             plot.datasource.data = data
@@ -203,12 +203,12 @@ class PlotHandler:
         # add colors
         data["color"] = [RINEX_CONSTELLATION_COLORS[sv_id[0]] for sv_id in data["x"]]
 
-        if plot.plot is None or plot.datasource is None:
+        if plot.figure is None or plot.datasource is None:
             plot.init(ColumnDataSource(data=data))
         else:
             plot.datasource.data = data
-            plot.plot.x_range.factors = self._sort_rinex_sv_ids(
-                set(list(plot.plot.x_range.factors) + data["x"])
+            plot.figure.x_range.factors = self._sort_rinex_sv_ids(
+                set(list(plot.figure.x_range.factors) + data["x"])
             )
 
     def _add_plot_to_column(self, plot: Plot) -> None:
@@ -221,13 +221,13 @@ class PlotHandler:
         Set the column order based on priority. Higher priority values go
         before lower values.
         """
-        if plot.plot is None or plot.visible:
+        if plot.figure is None or plot.visible:
             return
 
         plot.visible = True
 
         plots_to_add = [
-            plot for plot in self.plots if plot.visible and plot.plot is not None
+            plot for plot in self.plots if plot.visible and plot.figure is not None
         ]
         plots_prioritized = sorted(plots_to_add, key=lambda x: x.priority, reverse=True)
 
@@ -288,9 +288,9 @@ class PlotHandler:
 
         self._set_plot_styles(p)
         plot.datasource = datasource
-        plot.plot = p
+        plot.figure = p
         plot.layout = row(
-            plot.plot,
+            plot.figure,
             self._center_map_toggle,
             sizing_mode="inherit",
         )
@@ -332,5 +332,5 @@ class PlotHandler:
 
         self._set_plot_styles(p)
         plot.datasource = datasource
-        plot.plot = p
+        plot.figure = p
         self._add_plot_to_column(plot)
