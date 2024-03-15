@@ -60,10 +60,11 @@ def handle_args() -> argparse.Namespace:
     return args
 
 
-def main():
-    """Visualize GNSS data from INPUT file or device."""
-    args = handle_args()
+def run_app(args: argparse.Namespace):
+    """Start the application.
 
+    This is meant to be called from bokeh server.
+    """
     LOGGER.info("Starting GNSS Visualizer application.")
 
     plot_handler = PlotHandler(curdoc())
@@ -71,6 +72,3 @@ def main():
 
     thread = Thread(target=stream_reader.read)
     thread.start()
-
-
-main()

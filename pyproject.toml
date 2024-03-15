@@ -41,4 +41,4 @@ Changelog = "https://github.com/jopppis/gnss-visualizer/blob/main/CHANGELOG.md"
 packages = ["src/gnss_visualizer"]
 
 [project.scripts]
-gnss-visualizer = "gnss_visualizer.__main__:main"
+gnss-visualizer = "gnss_visualizer.run_server:main"
