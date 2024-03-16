@@ -69,7 +69,11 @@ class UbxStreamReader:
             if msg_str in self.plot_handler.required_msgs:
                 self._read_msg(msg, msg_str)
 
-            if msg_str == "NAV-PVT" and self.simulate_wait_s is not None:
+            if (
+                msg_str == "NAV-PVT"
+                and self.simulate_wait_s is not None
+                and self.file.is_file()
+            ):
                 LOGGER.info(f"Simulating wait of {self.simulate_wait_s} s")
                 sleep(self.simulate_wait_s)
 
