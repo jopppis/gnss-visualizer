@@ -13,7 +13,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/jopppis/gnss-visualizer">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/logo.webp" alt="Logo">
   </a>
 
   <h3 align="center">GNSS Visualizer</h3>
