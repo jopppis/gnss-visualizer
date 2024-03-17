@@ -1,7 +1,10 @@
 """Generate plots."""
 
+import gettext
+import locale
 import logging
 from math import isnan
+from pathlib import Path
 from typing import Any, Callable, Iterable
 
 import pyubx2
@@ -17,6 +20,13 @@ from gnss_visualizer.models.plot import Plot
 
 LOGGER = logging.getLogger(__name__)
 
+locale.setlocale(locale.LC_ALL, "")
+lang = gettext.translation(
+    "messages", localedir=Path(__file__).parent / "translations", fallback=True
+)
+lang.install()
+_ = lang.gettext
+
 
 class PlotHandler:
     """Generate plots from GNSS receiver messages."""
@@ -28,7 +38,7 @@ class PlotHandler:
     DEFAULT_MAP_TOOLS = "pan,wheel_zoom,zoom_out,box_zoom,hover,undo,redo,reset"
     DEFAULT_TOOLS = "pan,wheel_zoom,zoom_out,box_zoom,hover,undo,redo,reset"
 
-    TITLE = "Satelliittipaikannin"
+    TITLE = _("GNSS Visualizer")
 
     def __init__(self, doc: Document):
         """Initialize an instance."""
@@ -270,7 +280,7 @@ class PlotHandler:
 
         p = figure(
             height=self.MAP_PLOT_HEIGHT,
-            title="Sijainti",
+            title=_("Position map"),
             x_range=(datasource.data["x"][0] - 1e3, datasource.data["x"][0] + 1e3),
             y_range=(datasource.data["y"][0] - 1e3, datasource.data["y"][0] + 1e3),
             x_axis_type="mercator",
@@ -294,7 +304,7 @@ class PlotHandler:
 
         # create button that toggles map_centering and changes color based on the state of the centering
         self._center_map_toggle = Toggle(
-            label="Keskitä kartta",
+            label=_("Center map"),
             button_type="success",
             active=True,
         )
@@ -327,7 +337,7 @@ class PlotHandler:
         plot = self.get_plot("sv_cno")
 
         y_label = "C/N0 [dBHz]"
-        x_label = "Satelliitti"
+        x_label = _("Satellite")
 
         tooltip = [
             (x_label, "@x"),
@@ -336,7 +346,7 @@ class PlotHandler:
 
         p = figure(
             height=self.DEFAULT_PLOT_HEIGHT,
-            title="Signaalin voimakkuus",
+            title=_("Signal strength"),
             tools=self.DEFAULT_TOOLS,
             tooltips=tooltip,
             x_range=self._sort_rinex_sv_ids(datasource.data["x"]),
