@@ -9,11 +9,10 @@
 [![AGPL-3.0 License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-
 <br />
 <div align="center">
   <a href="https://github.com/jopppis/gnss-visualizer">
-    <img src="images/logo.webp" alt="Logo">
+    <img src="https://github.com/jopppis/gnss-visualizer/assets/25751262/da2d0ab8-140d-44bc-a8bf-407bed7b97d4" alt="Logo">
   </a>
 
   <h3 align="center">GNSS Visualizer</h3>
