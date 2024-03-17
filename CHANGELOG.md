@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Initial version
+-
 
 ### Changed
 -
@@ -16,7 +16,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 -
 
-## [0.0.1]
+## [0.0.2] - 2024-03-17
+
+### Added
+- Translations
+
+### Changed
+- Language to English
+- Skip simulated waiting for serial devices
+
+## [0.0.1] - 2024-03-15
 
 ### Added
 - Initial version
