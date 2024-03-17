@@ -3,6 +3,7 @@ pip
 ipdb
 ipython
 mypy
-build
 pytest
+tox
+build
 twine
