@@ -23,6 +23,8 @@ idna==3.6
     # via requests
 importlib-metadata==7.0.2
     # via twine
+iniconfig==2.0.0
+    # via pytest
 ipdb==0.13.13
 ipython==8.22.2
     # via ipdb
@@ -50,7 +52,9 @@ mypy-extensions==1.0.0
 nh3==0.2.15
     # via readme-renderer
 packaging==24.0
-    # via build
+    # via
+    #   build
+    #   pytest
 parso==0.8.3
     # via jedi
 pexpect==4.9.0
@@ -58,6 +62,8 @@ pexpect==4.9.0
 pip==24.0
 pkginfo==1.10.0
     # via twine
+pluggy==1.4.0
+    # via pytest
 prompt-toolkit==3.0.43
     # via ipython
 ptyprocess==0.7.0
@@ -73,6 +79,7 @@ pygments==2.17.2
     #   rich
 pyproject-hooks==1.0.0
     # via build
+pytest==8.1.1
 readme-renderer==43.0
     # via twine
 requests==2.31.0
