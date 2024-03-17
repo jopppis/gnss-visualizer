@@ -21,6 +21,8 @@
     Interactive analysis of GNSS data!
     <br />
     <br />
+    <a href="https://pypi.org/project/gnss-visualizer/">PyPI</a>
+    ·
     <a href="https://github.com/jopppis/gnss-visualizer/issues">Report Bug</a>
     ·
     <a href="https://github.com/jopppis/gnss-visualizer/issues">Request Feature</a>
