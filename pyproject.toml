@@ -12,7 +12,7 @@ dependencies = [
   "xyzservices",
   "pyproj",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 authors = [
   {name = "Ville Joensuu", email = "ville.joensuu@iki.fi"},
 ]
