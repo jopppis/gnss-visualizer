@@ -12,7 +12,7 @@ dependencies = [
   "xyzservices",
   "pyproj",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 authors = [
   {name = "Ville Joensuu", email = "ville.joensuu@iki.fi"},
 ]
@@ -60,4 +60,9 @@ legacy_tox_ini = """
     [testenv]
     deps = pytest
     commands = pytest
+    [gh]
+    python =
+        3.12 = py312
+        3.11 = py311
+        3.10 = py310
 """

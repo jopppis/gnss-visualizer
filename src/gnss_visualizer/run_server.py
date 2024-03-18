@@ -12,9 +12,9 @@ import subprocess
 import sys
 from pathlib import Path
 
+from gnss_visualizer import app
 
 GNSS_VISUALIZER_PATH = Path(__file__).resolve().parent
-from gnss_visualizer import app
 
 
 def main():
