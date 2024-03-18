@@ -9,12 +9,12 @@ This is alternative to running:
 """
 
 import subprocess
+import sys
 from pathlib import Path
 
-GNSS_VISUALIZER_PATH = Path(__file__).resolve().parent
-import sys
-
 from gnss_visualizer import app
+
+GNSS_VISUALIZER_PATH = Path(__file__).resolve().parent
 
 
 def main():
