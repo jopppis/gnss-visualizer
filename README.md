@@ -123,8 +123,9 @@ gnss-visualizer /dev/ttyUSB0
 
 ## Roadmap
 
+- [x] Test setup
+- [x] Github CICD
 - [ ] Tests
-- [ ] Github CICD
 - [ ] Plot selection mechanism
 - [ ] Make plotting module with classess for different plots
 - [ ] Set up whole file reading for timeseries plots
