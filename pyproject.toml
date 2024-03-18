@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "gnss-visualizer"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
   "pyubx2",
   "bokeh",
