@@ -64,6 +64,8 @@ GNSS visualizer is a tool for visualizing GNSS data in an interactive environmen
 
 It is designed to offer a simple interface in a web browser with ever extending plotting capabilities.
 
+GNSS receivers collect lots of information about the satellites and the signals they observe which can help to understand the quality of the positioning solution and the behavior of the receiver. Vast amounts of this data make it sometimes difficult to take proper advantage of it. GNSS visualizer aims to make this easier by providing easy to use tool that can be used to explore the data.
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -71,7 +73,7 @@ It is designed to offer a simple interface in a web browser with ever extending 
 
 ### Built with
 
-The interface and all the plots are built using awesome [Bokeh](https://bokeh.org/) library.
+The interface and all the plots are built using awesome [Bokeh](https://bokeh.org/) library. Bokeh gives lots of power for creating pretty plots with nice interactive features including callbacks to python code.
 
 Parsing of ubx messages leverages [pyubx2](https://github.com/semuconsulting/pyubx2) library.
 
@@ -80,6 +82,9 @@ Parsing of ubx messages leverages [pyubx2](https://github.com/semuconsulting/pyu
 
 
 ## Getting started
+
+### Prequisites
+- Python 3.11 or later. Earlier versions might work but are not tested.
 
 ### Installation via pip
 
@@ -151,11 +156,23 @@ Contributions are what make the open source community such an amazing place to l
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue.
 Don't forget to give the project a star! Thanks again!
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+### Setting up a local repository
+
+1. Fork the project
+2. Clone the forked project
+3. Install dependencies (`pip install -r requirements.txt && pip install -r requirements-dev.txt`)
+4. Install the project in editable mode (`pip install -e .`)
+5. Install pre-commit (`pipx install pre-commit`)
+5. Install pre-commit hooks (`pre-commit install`)
+
+### Steps to contribute
+
+1. Set up a local repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a pull request
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
