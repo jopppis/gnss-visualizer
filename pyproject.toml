@@ -60,4 +60,9 @@ legacy_tox_ini = """
     [testenv]
     deps = pytest
     commands = pytest
+    [gh]
+    python =
+        3.12 = py312
+        3.11 = py311
+        3.10 = py310
 """
