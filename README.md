@@ -64,6 +64,9 @@ GNSS visualizer is a tool for visualizing GNSS data in an interactive environmen
 
 It is designed to offer a simple interface in a web browser with ever extending plotting capabilities.
 
+The tool is still in very early development so don't expect much just yet!
+
+
 GNSS receivers collect lots of information about the satellites and the signals they observe which can help to understand the quality of the positioning solution and the behavior of the receiver. Vast amounts of this data make it sometimes difficult to take proper advantage of it. GNSS visualizer aims to make this easier by providing easy to use tool that can be used to explore the data.
 
 
