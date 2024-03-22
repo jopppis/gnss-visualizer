@@ -120,7 +120,7 @@ six==1.16.0
     # via asttokens
 stack-data==0.6.3
     # via ipython
-tox==4.14.1
+tox==4.14.2
 traitlets==5.14.2
     # via
     #   ipython
