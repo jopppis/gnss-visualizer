@@ -23,7 +23,7 @@ pillow==10.2.0
 pynmeagps==1.0.33
     # via pyubx2
 pyproj==3.6.1
-pyrtcm==1.0.16
+pyrtcm==1.0.17
     # via pyubx2
 pyserial==3.5
 python-dateutil==2.9.0.post0
