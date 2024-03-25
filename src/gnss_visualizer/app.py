@@ -12,8 +12,8 @@ from threading import Thread
 
 from bokeh.plotting import curdoc
 
-from gnss_visualizer.plot import LOGGER as plot_logger
-from gnss_visualizer.plot import PlotHandler
+from gnss_visualizer.plot_handler import LOGGER as plot_logger
+from gnss_visualizer.plot_handler import PlotHandler
 from gnss_visualizer.ubx_stream import LOGGER as ubx_logger
 from gnss_visualizer.ubx_stream import UbxStreamReader
 

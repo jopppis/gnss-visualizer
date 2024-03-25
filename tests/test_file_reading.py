@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 
 from bokeh.plotting import curdoc
-from gnss_visualizer.plot import PlotHandler
+from gnss_visualizer.plot_handler import PlotHandler
 from gnss_visualizer.ubx_stream import UbxStreamReader
 
 

@@ -9,7 +9,8 @@ from time import sleep
 import pyubx2
 from serial import Serial, SerialException
 
-from gnss_visualizer.plot import PlotHandler
+from gnss_visualizer.plot_handler import PlotHandler
+from gnss_visualizer.protocols.ubx import get_full_ubx_msg_id
 
 LOGGER = logging.getLogger(__name__)
 
@@ -24,6 +25,38 @@ class UbxStreamReader:
         self.file = file
         self.plot_handler = plot_handler
         self.simulate_wait_s = simulate_wait_s
+
+    def read_messages_of_type(self, msg_type: str) -> None:
+        """Read UBX messages of a given type."""
+        if not self.file.is_file():
+            raise ValueError("Unable to read all messages from device")
+
+        LOGGER.info(f"Reading UBX messages of type {msg_type} from file {self.file}")
+        msgs = []
+        with self.file.open("rb") as f:
+            while (msg := self._read_ubx_message_from_file(f, msg_type)) is not None:
+                msgs.append(msg)
+        pass
+
+    def _read_ubx_message_from_file(
+        self, stream: io.IOBase, msg_type: str
+    ) -> pyubx2.UBXMessage:
+        """Read UBX stream from a stream."""
+        ubr = pyubx2.UBXReader(stream, protfilter=pyubx2.UBX_PROTOCOL)
+        while True:
+            msg = ubr.read()[1]
+            if msg is None:
+                return None
+            # make sure the result is ubx
+            if not isinstance(msg, pyubx2.UBXMessage):
+                continue
+
+            # check the message type
+            msg_str = get_full_ubx_msg_id(msg)
+            if msg_str != msg_type:
+                continue
+
+            return msg
 
     def read(self) -> None:
         """Read ubx from file or device."""
@@ -65,12 +98,12 @@ class UbxStreamReader:
                 continue
 
             # check the message type
-            msg_str = pyubx2.UBX_MSGIDS[msg.msg_cls + msg.msg_id]
+            msg_str = get_full_ubx_msg_id(msg)
             if msg_str in self.plot_handler.required_msgs:
                 self._read_msg(msg, msg_str)
 
             if (
-                msg_str == "NAV-PVT"
+                msg_str == "UBX-NAV-PVT"
                 and self.simulate_wait_s is not None
                 and self.file.is_file()
             ):
@@ -80,8 +113,7 @@ class UbxStreamReader:
     def _read_msg(self, msg: pyubx2.UBXMessage, msg_str: str) -> None:
         """Read UBX message."""
         LOGGER.debug(f"Message: {msg_str}")
-        for msg_handler in self.plot_handler.get_handlers_for_msg(msg_str):
-            if msg_handler is not None:
-                self.plot_handler.doc.add_next_tick_callback(
-                    partial(msg_handler, msg=msg)
-                )
+        for plot in self.plot_handler.get_plots_for_msg(msg_str):
+            self.plot_handler.doc.add_next_tick_callback(
+                partial(self.plot_handler.update_plot, plot=plot, msg=msg)
+            )
