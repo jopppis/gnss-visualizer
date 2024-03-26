@@ -8,7 +8,7 @@
     {
       "matchDepTypes": ["devDependencies"],
       "groupName": "devDependencies",
-      "schedule": "before 1pm on Monday",
+      "schedule": "before 1pm on Monday"
     }
   ]
 }
