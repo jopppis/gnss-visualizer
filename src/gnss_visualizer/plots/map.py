@@ -168,10 +168,11 @@ class LivePositionMapPlot(GenericContinuousPlot):
             fill_alpha=0.4,
             source=self.datasource,
         )
-        self.figure.circle(
+        self.figure.scatter(
             x="x",
             y="y",
             size=15,
+            marker="circle",
             fill_color="#d62728",
             fill_alpha=1,
             source=self.datasource,
