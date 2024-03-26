@@ -3,5 +3,12 @@
   "extends": [
     "config:recommended"
   ],
-  "timezone": "Europe/Helsinki"
+  "timezone": "Europe/Helsinki",
+  "packageRules": [
+    {
+      "matchDepTypes": ["devDependencies"],
+      "groupName": "devDependencies",
+      "schedule": "before 1pm on Monday",
+    }
+  ]
 }
