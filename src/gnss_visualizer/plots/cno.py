@@ -15,7 +15,7 @@ from gnss_visualizer.plots.generic_plot import GenericContinuousPlot
 
 locale.setlocale(locale.LC_ALL, "")
 lang = gettext.translation(
-    "messages", localedir=Path(__file__).parent / "translations", fallback=True
+    "messages", localedir=Path(__file__).parent.parent / "translations", fallback=True
 )
 lang.install()
 _ = lang.gettext

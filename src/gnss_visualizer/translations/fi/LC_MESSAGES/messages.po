@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-03-17 15:21+0200\n"
+"POT-Creation-Date: 2024-03-27 12:15+0200\n"
 "PO-Revision-Date: 2024-03-17 14:55+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: fi\n"
@@ -18,23 +18,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.14.0\n"
 
-#: src/gnss_visualizer/plot.py:43
+#: src/gnss_visualizer/plot_handler.py:29
 msgid "GNSS Visualizer"
 msgstr "Satelliittipaikannin"
 
-#: src/gnss_visualizer/plot.py:285
-msgid "Position map"
-msgstr "Sijainti"
-
-#: src/gnss_visualizer/plot.py:309
-msgid "Center map"
-msgstr "Keskitä kartta"
-
-#: src/gnss_visualizer/plot.py:342
+#: src/gnss_visualizer/plots/cno.py:74
 msgid "Satellite"
 msgstr "Satelliitti"
 
-#: src/gnss_visualizer/plot.py:351
+#: src/gnss_visualizer/plots/cno.py:84
 msgid "Signal strength"
 msgstr "Signaalin voimakkuus"
+
+#: src/gnss_visualizer/plots/map.py:49
+msgid "Center map"
+msgstr "Keskitä kartta"
+
+#: src/gnss_visualizer/plots/map.py:139
+msgid "Latitude"
+msgstr "Leveysaste"
+
+#: src/gnss_visualizer/plots/map.py:140
+msgid "Longitude"
+msgstr "Pituusaste"
+
+#: src/gnss_visualizer/plots/map.py:141
+msgid "Horizontal Accuracy"
+msgstr "Tarkkuus (horisontaalinen)"
+
+#: src/gnss_visualizer/plots/map.py:147
+msgid "Position map"
+msgstr "Sijainti"
 

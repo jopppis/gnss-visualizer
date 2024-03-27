@@ -18,7 +18,7 @@ from gnss_visualizer.protocols.ubx import get_full_ubx_msg_id
 
 locale.setlocale(locale.LC_ALL, "")
 lang = gettext.translation(
-    "messages", localedir=Path(__file__).parent / "translations", fallback=True
+    "messages", localedir=Path(__file__).parent.parent / "translations", fallback=True
 )
 lang.install()
 _ = lang.gettext
@@ -136,9 +136,9 @@ class LivePositionMapPlot(GenericContinuousPlot):
         LOGGER.info("Initialize continuous position map plot")
 
         tooltip = [
-            ("Leveysaste", "@{lat}°"),
-            ("Pituusaste", "@{lon}°"),
-            ("Tarkkuus", "@h_acc m"),
+            (_("Latitude"), "@{lat}°"),
+            (_("Longitude"), "@{lon}°"),
+            (_("Horizontal Accuracy"), "@h_acc m"),
         ]
 
         self.datasource = datasource
