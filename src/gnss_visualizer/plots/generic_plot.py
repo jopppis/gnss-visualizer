@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 
 import pyubx2
-from bokeh.models import ColumnDataSource, LayoutDOM, Spacer
+from bokeh.models import ColumnDataSource, LayoutDOM
 from bokeh.plotting import figure
 
 
@@ -21,7 +21,6 @@ class GenericPlot(ABC):
         self.datasource: ColumnDataSource | None = None
 
         self._main_layout: LayoutDOM | None = None
-        self._side_layout: LayoutDOM | None = None
 
         self.initialized = False
 
@@ -59,25 +58,6 @@ class GenericPlot(ABC):
         This can be used to append other models besides just the figure.
         """
         self._main_layout = layout
-
-    @property
-    def side_layout(self) -> LayoutDOM | None:
-        """Get side layout item for this plot.
-
-        Side layout can be used to show extra information or controls besides a
-        plot.
-        """
-        if self._side_layout:
-            return self._side_layout
-        else:
-            if self.main_layout is None:
-                return None
-            return Spacer(height=self.main_layout.height)
-
-    @side_layout.setter
-    def side_layout(self, layout: LayoutDOM) -> None:
-        """Set the side layout to be used for the plot."""
-        self._side_layout = layout
 
     def _finalize_figure(self) -> None:
         """Set plot styles."""

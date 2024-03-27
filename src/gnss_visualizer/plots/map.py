@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pyubx2
 import xyzservices.providers as xyz
-from bokeh.layouts import Spacer, column
+from bokeh.layouts import Spacer, column, row
 from bokeh.models import ColumnDataSource, Toggle
 from bokeh.plotting import figure
 
@@ -182,8 +182,10 @@ class LivePositionMapPlot(GenericContinuousPlot):
 
         self._add_center_map_toggle()
 
-        self.side_layout = column(
+        side_layout = column(
             Spacer(height=40, sizing_mode="fixed"),
             self._center_map_toggle,
             height=self.MAP_PLOT_HEIGHT,
         )
+
+        self.main_layout = row(self.figure, side_layout, sizing_mode="inherit")

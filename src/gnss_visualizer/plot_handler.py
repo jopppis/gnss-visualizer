@@ -78,8 +78,6 @@ class PlotHandler:
         for plot in plots_to_add:
             self._main_column.children.append(plot.main_layout)
             self._main_column.children.append(Spacer(height=self.SPACER_HEIGHT))
-            self._side_column.children.append(plot.side_layout)
-            self._side_column.children.append(Spacer(height=self.SPACER_HEIGHT))
 
     async def update_plot(
         self, plot: GenericContinuousPlot, msg: pyubx2.UBXMessage
