@@ -20,7 +20,7 @@ pandas==2.2.1
     # via bokeh
 pillow==10.2.0
     # via bokeh
-pynmeagps==1.0.33
+pynmeagps==1.0.35
     # via pyubx2
 pyproj==3.6.1
 pyrtcm==1.0.16
