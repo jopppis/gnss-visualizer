@@ -11,12 +11,8 @@
       "schedule": "before 1pm on Monday"
     },
     {
-      "paths": ["requirements-dev.txt"],
-      "groupName": "devDependencies",
-      "schedule": "before 1pm on Monday"
-    },
-    {
       "ignorePaths": ["requirements-dev.txt"],
+      "matchPackagePatterns": ["*"],
       "schedule": "before 1pm on Monday"
     },
   ]
