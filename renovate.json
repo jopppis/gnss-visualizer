@@ -13,6 +13,7 @@
     {
       "ignorePaths": ["requirements-dev.txt"],
       "matchPackagePatterns": ["*"],
+      "groupName": "dependencies",
       "schedule": "before 1pm on Monday"
     }
   ]
