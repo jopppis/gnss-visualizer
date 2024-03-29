@@ -140,7 +140,7 @@ gnss-visualizer /dev/ttyUSB0
 - [x] Make plotting module with classess for different plots
 - [ ] Set up whole file reading for timeseries plots
 - [ ] More plots
-- [ ] Allow playback after reading the whole file
+- [x] Allow playback after reading the whole file
 - [ ] Configurable wait delay
 - [ ] Non-ubx file support (some basic plots?)
 - [ ] Even more plots
