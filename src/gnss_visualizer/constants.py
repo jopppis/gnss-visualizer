@@ -21,3 +21,5 @@ RINEX_CONSTELLATION_COLORS = {
     "I": "#7f7f7f",
     "?": "#bcbd22",
 }
+
+TOP_SPACER_HEIGHT = 45

@@ -30,6 +30,11 @@ class LiveSVCnoPlot(GenericContinuousPlot):
     """
 
     @property
+    def name(self) -> str:
+        """Get the name of the plot."""
+        return _("Signal strength (live)")
+
+    @property
     def required_messages(self) -> list[str]:
         """Get required messages for this plot."""
         return ["UBX-NAV-SIG"]

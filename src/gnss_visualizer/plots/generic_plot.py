@@ -17,12 +17,19 @@ class GenericPlot(ABC):
 
     def __init__(self) -> None:
         """Initialize an instance."""
+        self._name: str | None = None
+
         self.figure: figure | None = None
         self.datasource: ColumnDataSource | None = None
 
         self._main_layout: LayoutDOM | None = None
 
         self.initialized = False
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """Get the name of the plot."""
 
     @property
     @abstractmethod
@@ -38,6 +45,11 @@ class GenericPlot(ABC):
         update when new data arrives whereas non-continuous plots show data for
         the full file at once and do not update after creation.
         """
+
+    @property
+    def visible_on_start(self) -> bool:
+        """Get whether the plot is visible on start."""
+        return False
 
     @property
     def main_layout(self) -> LayoutDOM | None:

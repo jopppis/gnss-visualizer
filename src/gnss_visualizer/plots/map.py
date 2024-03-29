@@ -12,6 +12,7 @@ from bokeh.layouts import Spacer, column, row
 from bokeh.models import ColumnDataSource, Toggle
 from bokeh.plotting import figure
 
+from gnss_visualizer.constants import TOP_SPACER_HEIGHT
 from gnss_visualizer.conversions import lat_lon_to_web_mercator
 from gnss_visualizer.plots.generic_plot import GenericContinuousPlot
 from gnss_visualizer.protocols.ubx import get_full_ubx_msg_id
@@ -33,6 +34,16 @@ class LivePositionMapPlot(GenericContinuousPlot):
         """Init the instance."""
         super().__init__(*args, **kwargs)
         self._center_map_toggle = self._add_center_map_toggle()
+
+    @property
+    def visible_on_start(self) -> bool:
+        """Get whether the plot is visible on start."""
+        return True
+
+    @property
+    def name(self) -> str:
+        """Get the name of the plot."""
+        return _("Position map (live)")
 
     @property
     def required_messages(self) -> list[str]:
@@ -183,7 +194,7 @@ class LivePositionMapPlot(GenericContinuousPlot):
         self._add_center_map_toggle()
 
         side_layout = column(
-            Spacer(height=40, sizing_mode="fixed"),
+            Spacer(height=TOP_SPACER_HEIGHT, sizing_mode="fixed"),
             self._center_map_toggle,
             height=self.MAP_PLOT_HEIGHT,
         )
