@@ -94,7 +94,9 @@ class UbxStreamReader:
                 self.plot_handler.request_file_rewind = False
             msg = ubr.read()[1]
             if msg is None:
-                return
+                # sleep to avoid busy loop
+                sleep(0.01)
+                continue
             # make sure the result is ubx
             if not isinstance(msg, pyubx2.UBXMessage):
                 LOGGER.info(f"Message is not UBX: {msg}")
