@@ -20,19 +20,22 @@ GNSS_VISUALIZER_PATH = Path(__file__).resolve().parent
 def main():
     """Visualize GNSS data from INPUT file or device."""
     # use the same command line interface as the actual app
-    app.handle_args()
-    args = sys.argv[1:]
-    # run the bokeh serve command with the same python interpreter as this
-    # script
+    parsed_args = app.handle_args()
+    # run the bokeh serve command with the same python interpreter
     cmd = [
         sys.executable,
         "-m",
         "bokeh",
         "serve",
-        str(GNSS_VISUALIZER_PATH),
+    ]
+    if parsed_args.dev:
+        cmd.append("--dev")
+    cmd += [
         "--show",
+        str(GNSS_VISUALIZER_PATH),
         "--args",
-    ] + args
+    ] + sys.argv[1:]
+
     subprocess.run(cmd)
 
 

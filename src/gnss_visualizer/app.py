@@ -35,6 +35,11 @@ def handle_args() -> argparse.Namespace:
         help="Simulate wait time between NAV-PVT messages, only applies for reading files.",
     )
     parser.add_argument(
+        "--dev",
+        action="store_true",
+        help="Enable live reloading during app development.",
+    )
+    parser.add_argument(
         "-v",
         "--verbose",
         action="count",
