@@ -22,7 +22,15 @@ def main():
     # use the same command line interface as the actual app
     app.handle_args()
     args = sys.argv[1:]
-    cmd = ["bokeh", "serve", str(GNSS_VISUALIZER_PATH), "--show", "--args"] + args
+    cmd = [
+        sys.executable,
+        "-m",
+        "bokeh",
+        "serve",
+        str(GNSS_VISUALIZER_PATH),
+        "--show",
+        "--args",
+    ] + args
     subprocess.run(cmd)
 
 
