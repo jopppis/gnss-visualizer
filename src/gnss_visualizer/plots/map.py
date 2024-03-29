@@ -5,6 +5,7 @@ import locale
 import logging
 from math import isnan
 from pathlib import Path
+from typing import Any
 
 import pyubx2
 import xyzservices.providers as xyz
@@ -62,7 +63,7 @@ class LivePositionMapPlot(GenericContinuousPlot):
             active=True,
         )
 
-        def center_map_click(_) -> None:
+        def center_map_click(_: Any) -> None:
             """Change apperance of center map button upon a click."""
             if self._center_map_toggle.active:
                 self._center_map_toggle.button_type = "success"

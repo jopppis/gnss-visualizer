@@ -89,6 +89,9 @@ class UbxStreamReader:
         """Read UBX stream from a stream."""
         ubr = pyubx2.UBXReader(stream, protfilter=pyubx2.UBX_PROTOCOL)
         while True:
+            if self.plot_handler.request_file_rewind:
+                stream.seek(0)
+                self.plot_handler.request_file_rewind = False
             msg = ubr.read()[1]
             if msg is None:
                 return
