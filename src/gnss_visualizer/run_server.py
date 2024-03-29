@@ -22,6 +22,8 @@ def main():
     # use the same command line interface as the actual app
     app.handle_args()
     args = sys.argv[1:]
+    # run the bokeh serve command with the same python interpreter as this
+    # script
     cmd = [
         sys.executable,
         "-m",
