@@ -45,6 +45,7 @@ class PlotHandler:
         self._config = self._generate_configuration()
 
         root_row = row(
+            Spacer(width=20),
             self._main_column,
             Spacer(width=40),
             self._side_column,
