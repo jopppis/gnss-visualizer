@@ -73,7 +73,7 @@ def run_app(args: argparse.Namespace):
     LOGGER.info("Starting GNSS Visualizer application.")
 
     plot_handler = PlotHandler(curdoc())
-    plot_handler.rewind_button.visible = args.input.is_file()
+    plot_handler.controls.rewind_button.visible = args.input.is_file()
     stream_reader = UbxStreamReader(args.input, plot_handler, args.simulate_wait_s)
 
     thread = Thread(target=stream_reader.read)

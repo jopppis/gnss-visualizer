@@ -3,6 +3,7 @@
 import gettext
 import locale
 import logging
+from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
 
@@ -39,18 +40,11 @@ class PlotHandler:
             gnss_visualizer.plots.LiveSVCnoPlot(),
         )
 
-        # flag for rewinding the stream
-        self.request_file_rewind = False
-        self.rewind_button = Button(
-            label=_("Rewind file"), button_type="danger", visible=False
-        )
-
         self._main_column = column(sizing_mode="stretch_width")
         self._side_column = column()
 
-        self._plot_selection: MultiChoice | None = None
-        self._config = self._generate_configuration()
-        self._controls = self._generate_controls()
+        self.config = SideLayoutConfiguration(self)
+        self.controls = SideLayoutControls()
 
         root_row = row(
             Spacer(width=20),
@@ -72,12 +66,12 @@ class PlotHandler:
     @property
     def selected_plots(self) -> list[GenericPlot]:
         """Get selected plots."""
-        if self._plot_selection is None:
+        if self.config.plot_selection is None:
             return []
         return [
             plot
             for plot in self.available_plots
-            if plot.name in self._plot_selection.value
+            if plot.name in self.config.plot_selection.value
         ]
 
     @property
@@ -107,7 +101,7 @@ class PlotHandler:
             self._main_column.children.append(plot.main_layout)
             self._main_column.children.append(Spacer(height=self.SPACER_HEIGHT))
 
-        self._side_column.children = [self._controls, self._config]
+        self._side_column.children = [self.controls.layout, self.config.layout]
 
     async def update_plot(
         self, plot: GenericContinuousPlot, msg: pyubx2.UBXMessage
@@ -130,6 +124,25 @@ class PlotHandler:
 
         return plots
 
+
+class SideLayoutSection(ABC):
+    """Base class for side layout sections."""
+
+    def __init__(self) -> None:
+        """Initialize an instance."""
+        self._layout: LayoutDOM | None = None
+
+    @property
+    def layout(self) -> LayoutDOM:
+        """Get the layout."""
+        if self._layout is None:
+            self._layout = self._generate_layout()
+        return self._layout
+
+    @abstractmethod
+    def _generate_layout(self) -> LayoutDOM:
+        """Generate the layout."""
+
     def _make_side_layout_title_div(self, title: str, level: int = 1) -> Div:
         """Generate a title div for the side layout."""
         if level == 1:
@@ -141,24 +154,57 @@ class PlotHandler:
 
         return Div(text=title, styles={"font-size": font_size})
 
-    def _generate_plot_selection_config(self):
+
+class SideLayoutConfiguration(SideLayoutSection):
+    """Configuration for side layout."""
+
+    def __init__(self, plot_handler: PlotHandler) -> None:
+        """Initialize an instance."""
+        super().__init__()
+
+        self.plot_handler = plot_handler
+
+        self.plot_selection = self._generate_plot_selection()
+
+    def _generate_plot_selection(self) -> MultiChoice:
         """Generate plot selection configuration."""
-        options = [plot.name for plot in self.available_plots]
-        default = [plot.name for plot in self.available_plots if plot.visible_on_start]
-        self._plot_selection = MultiChoice(
+        options = [plot.name for plot in self.plot_handler.available_plots]
+        default = [
+            plot.name
+            for plot in self.plot_handler.available_plots
+            if plot.visible_on_start
+        ]
+        plot_selection = MultiChoice(
             value=default, options=options, sizing_mode="inherit"
         )
 
-        def selection_changed(attr: str, old: Any, new: Any):
-            self.update_layout()
+        def selection_changed(_attr: str, _old: Any, _new: Any):
+            self.plot_handler.update_layout()
 
-        self._plot_selection.on_change("value", selection_changed)
+        plot_selection.on_change("value", selection_changed)
 
-    def _generate_configuration(self) -> LayoutDOM:
-        """Generate configuration section for the side column."""
+        return plot_selection
+
+    def _generate_title_row(self, config_items: LayoutDOM) -> LayoutDOM:
+        """Generate title row for the side column."""
         title = self._make_side_layout_title_div(f"{_('Configuration')}", level=1)
+        # generate switch to toggle visibility and use it with the title
+        visibility_switch = Switch(active=False, align="center")
 
-        self._generate_plot_selection_config()
+        def toggle_visibility(_attr: str, _old: bool, new: bool):
+            config_items.visible = new
+
+        visibility_switch.on_change("active", toggle_visibility)
+        return row(
+            title,
+            Spacer(sizing_mode="stretch_width"),
+            visibility_switch,
+            sizing_mode="stretch_width",
+        )
+
+    def _generate_layout(self) -> LayoutDOM:
+        """Generate configuration section for the side column."""
+
         plot_selection_title = self._make_side_layout_title_div(
             _("Select plots"), level=2
         )
@@ -166,29 +212,32 @@ class PlotHandler:
         # set all items to column
         config_items = column(
             plot_selection_title,
-            self._plot_selection,
+            self.plot_selection,
             width=400,
             sizing_mode="inherit",
         )
         config_items.visible = False
 
-        # generate switch to toggle visibility and use it with the title
-        visibility_switch = Switch(active=False, align="center")
-
-        def toggle_visibility(attr: str, old: bool, new: bool):
-            config_items.visible = new
-
-        visibility_switch.on_change("active", toggle_visibility)
-        title_row = row(
-            title,
-            Spacer(sizing_mode="stretch_width"),
-            visibility_switch,
-            sizing_mode="stretch_width",
-        )
+        title_row = self._generate_title_row(config_items)
 
         return column(title_row, config_items, sizing_mode="stretch_width")
 
-    def _generate_controls(self) -> LayoutDOM:
+
+class SideLayoutControls(SideLayoutSection):
+    """Controls for the visualization."""
+
+    def __init__(self):
+        """Initialize the controls."""
+        super().__init__()
+
+        # flag for rewinding the stream
+        self.request_file_rewind = False
+
+        self.rewind_button = Button(
+            label=_("Rewind file"), button_type="danger", visible=False
+        )
+
+    def _generate_layout(self) -> LayoutDOM:
         """Generate controls section for the side column."""
         title = self._make_side_layout_title_div(f"{_('Controls')}", level=1)
 
@@ -196,6 +245,7 @@ class PlotHandler:
             self.request_file_rewind = True
 
         self.rewind_button.on_click(request_rewind)
+
         control_items = column(
             self.rewind_button,
             width=400,
