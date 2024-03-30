@@ -95,7 +95,7 @@ class UbxStreamReader:
             msg = ubr.read()[1]
             if msg is None:
                 # sleep to avoid busy loop
-                sleep(0.01)
+                sleep(0.001)
                 continue
             # make sure the result is ubx
             if not isinstance(msg, pyubx2.UBXMessage):
@@ -109,11 +109,13 @@ class UbxStreamReader:
 
             if (
                 msg_str == "UBX-NAV-PVT"
-                and self.simulate_wait_s is not None
                 and self.file.is_file()
+                and self.plot_handler.controls.wait_time_slider.value
             ):
-                LOGGER.info(f"Simulating wait of {self.simulate_wait_s} s")
-                sleep(self.simulate_wait_s)
+                LOGGER.info(
+                    f"Simulating wait of {self.plot_handler.controls.wait_time_slider.value} s"
+                )
+                sleep(self.plot_handler.controls.wait_time_slider.value)
 
     def _read_msg(self, msg: pyubx2.UBXMessage, msg_str: str) -> None:
         """Read UBX message."""

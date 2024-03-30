@@ -9,7 +9,7 @@ from gnss_visualizer.ubx_stream import UbxStreamReader
 class TestFileReading(unittest.TestCase):
     def setUp(self) -> None:
         self.file = Path(__file__).parent / "coldstart.ubx"
-        self.plot_handler = PlotHandler(curdoc())
+        self.plot_handler = PlotHandler(curdoc(), True, 0.1)
         self.simulate_wait_s = 1.0
         self.ubx_stream = UbxStreamReader(
             self.file, self.plot_handler, self.simulate_wait_s

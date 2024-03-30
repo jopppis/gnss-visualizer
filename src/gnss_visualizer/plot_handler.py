@@ -10,7 +10,7 @@ from typing import Any
 import pyubx2
 from bokeh.document import Document
 from bokeh.layouts import Spacer, column, row
-from bokeh.models import Button, Div, LayoutDOM, MultiChoice, Switch
+from bokeh.models import Button, Div, LayoutDOM, MultiChoice, Slider, Switch
 
 import gnss_visualizer.plots
 from gnss_visualizer.plots.generic_plot import GenericContinuousPlot, GenericPlot
@@ -31,7 +31,9 @@ class PlotHandler:
     TITLE = _("GNSS Visualizer")
     SPACER_HEIGHT = 25
 
-    def __init__(self, doc: Document):
+    def __init__(
+        self, doc: Document, input_is_file: bool, default_simulate_wait_s: float
+    ):
         """Initialize an instance."""
         self.doc = doc
 
@@ -44,7 +46,7 @@ class PlotHandler:
         self._side_column = column()
 
         self.config = SideLayoutConfiguration(self)
-        self.controls = SideLayoutControls()
+        self.controls = SideLayoutControls(input_is_file, default_simulate_wait_s)
 
         root_row = row(
             Spacer(width=20),
@@ -226,7 +228,7 @@ class SideLayoutConfiguration(SideLayoutSection):
 class SideLayoutControls(SideLayoutSection):
     """Controls for the visualization."""
 
-    def __init__(self) -> None:
+    def __init__(self, input_is_file: bool, default_simulate_wait_s: float) -> None:
         """Initialize the controls."""
         super().__init__()
 
@@ -236,6 +238,16 @@ class SideLayoutControls(SideLayoutSection):
         self.rewind_button = Button(
             label=_("Rewind file"), button_type="danger", visible=False
         )
+        self.rewind_button.visible = input_is_file
+
+        self.wait_time_slider = Slider(
+            start=0,
+            end=5,
+            value=default_simulate_wait_s,
+            step=0.1,
+            title=_("Wait between epochs (s)"),
+        )
+        self.wait_time_slider.visible = input_is_file
 
     def _generate_layout(self) -> LayoutDOM:
         """Generate controls section for the side column."""
@@ -248,6 +260,7 @@ class SideLayoutControls(SideLayoutSection):
 
         control_items = column(
             self.rewind_button,
+            self.wait_time_slider,
             width=400,
             sizing_mode="inherit",
         )

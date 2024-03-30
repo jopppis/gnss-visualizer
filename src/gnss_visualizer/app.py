@@ -29,10 +29,10 @@ def handle_args() -> argparse.Namespace:
     parser.add_argument("input", type=Path, help="Input file or device.")
     parser.add_argument(
         "-w",
-        "--simulate-wait-s",
+        "--default-simulate-wait-s",
         type=float,
-        default=None,
-        help="Simulate wait time between NAV-PVT messages, only applies for reading files.",
+        default=0.1,
+        help="Default value for simulated wait time between NAV-PVT messages, only applies for reading files.",
     )
     parser.add_argument(
         "--dev",
@@ -72,9 +72,10 @@ def run_app(args: argparse.Namespace) -> None:
     """
     LOGGER.info("Starting GNSS Visualizer application.")
 
-    plot_handler = PlotHandler(curdoc())
-    plot_handler.controls.rewind_button.visible = args.input.is_file()
-    stream_reader = UbxStreamReader(args.input, plot_handler, args.simulate_wait_s)
+    plot_handler = PlotHandler(
+        curdoc(), args.input.is_file(), args.default_simulate_wait_s
+    )
+    stream_reader = UbxStreamReader(args.input, plot_handler)
 
     thread = Thread(target=stream_reader.read)
     thread.start()
