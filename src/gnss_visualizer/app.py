@@ -65,7 +65,7 @@ def handle_args() -> argparse.Namespace:
     return args
 
 
-def run_app(args: argparse.Namespace):
+def run_app(args: argparse.Namespace) -> None:
     """Start the application.
 
     This is meant to be called from bokeh server.

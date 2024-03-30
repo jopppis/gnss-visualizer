@@ -43,6 +43,9 @@ packages = ["src/gnss_visualizer"]
 [project.scripts]
 gnss-visualizer = "gnss_visualizer.run_server:main"
 
+[tool.mypy]
+strict = true
+
 [tool.pytest.ini_options]
 testpaths = [
     "tests",

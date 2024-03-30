@@ -4,7 +4,7 @@
 from gnss_visualizer import app
 
 
-def main():
+def main() -> None:
     """Visualize GNSS data from INPUT file or device."""
     args = app.handle_args()
 

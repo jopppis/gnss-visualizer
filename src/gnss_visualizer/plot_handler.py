@@ -178,7 +178,7 @@ class SideLayoutConfiguration(SideLayoutSection):
             value=default, options=options, sizing_mode="inherit"
         )
 
-        def selection_changed(_attr: str, _old: Any, _new: Any):
+        def selection_changed(_attr: str, _old: Any, _new: Any) -> None:
             self.plot_handler.update_layout()
 
         plot_selection.on_change("value", selection_changed)
@@ -191,7 +191,7 @@ class SideLayoutConfiguration(SideLayoutSection):
         # generate switch to toggle visibility and use it with the title
         visibility_switch = Switch(active=False, align="center")
 
-        def toggle_visibility(_attr: str, _old: bool, new: bool):
+        def toggle_visibility(_attr: str, _old: bool, new: bool) -> None:
             config_items.visible = new
 
         visibility_switch.on_change("active", toggle_visibility)
@@ -226,7 +226,7 @@ class SideLayoutConfiguration(SideLayoutSection):
 class SideLayoutControls(SideLayoutSection):
     """Controls for the visualization."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the controls."""
         super().__init__()
 
@@ -260,7 +260,7 @@ class SideLayoutControls(SideLayoutSection):
             sizing_mode="stretch_width",
         )
 
-        def toggle_visibility(attr: str, old: bool, new: bool):
+        def toggle_visibility(attr: str, old: bool, new: bool) -> None:
             control_items.visible = new
 
         visibility_switch.on_change("active", toggle_visibility)

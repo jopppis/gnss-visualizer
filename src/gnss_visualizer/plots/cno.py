@@ -68,7 +68,7 @@ class LiveSVCnoPlot(GenericContinuousPlot):
             self.init_plot(ColumnDataSource(data=data))
         else:
             self.datasource.data = data
-            self.figure.x_range.factors = self._sort_rinex_sv_ids(  # type: ignore
+            self.figure.x_range.factors = self._sort_rinex_sv_ids(
                 set(list(self.figure.x_range.factors) + data["x"])
             )
 

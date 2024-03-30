@@ -31,7 +31,7 @@ LOGGER = logging.getLogger(__name__)
 class LivePositionMapPlot(GenericContinuousPlot):
     """Live plot for positions on map."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Init the instance."""
         super().__init__(*args, **kwargs)
         self._center_map_toggle = self._add_center_map_toggle()
@@ -51,7 +51,7 @@ class LivePositionMapPlot(GenericContinuousPlot):
         """Get required messages for this plot."""
         return ["UBX-NAV-PVT"]
 
-    def _add_center_map_toggle(self) -> None:
+    def _add_center_map_toggle(self) -> Toggle:
         """Add center map toggle button.
 
         The button toggles map centering and changes color based on the state of
@@ -87,7 +87,7 @@ class LivePositionMapPlot(GenericContinuousPlot):
             return
 
         # current plot range
-        dx_orig = (self.figure.x_range.end - self.figure.x_range.start) / 2  # type: ignore
+        dx_orig = (self.figure.x_range.end - self.figure.x_range.start) / 2
 
         try:
             aspect_ratio = self.figure.inner_height / self.figure.inner_width

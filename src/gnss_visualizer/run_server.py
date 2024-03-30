@@ -17,7 +17,7 @@ from gnss_visualizer import app
 GNSS_VISUALIZER_PATH = Path(__file__).resolve().parent
 
 
-def main():
+def main() -> None:
     """Visualize GNSS data from INPUT file or device."""
     # use the same command line interface as the actual app
     parsed_args = app.handle_args()
