@@ -108,7 +108,7 @@ Analyzing an ubx file in playback mode can be done in the following way:
 ```sh
 gnss-visualizer ~/path/to/file.ubx -w 1
 ```
-where -w (shorthand for --simulate-wait-s) is used to add delay of 1 second after each UBX-NAV-PVT message. This will make files with 1 Hz navigation rate playback as if they were done in (almost) realtime.
+where -w (shorthand for --default-simulate-wait-s) is used to add delay of 1 second after each UBX-NAV-PVT message. This will make files with 1 Hz navigation rate playback as if they were done in (almost) realtime.
 
 The input file should contain UBX-NAV-PVT messages and in order to generate signal and satellite based plots also UBX-NAV-SIG messages.
 
