@@ -141,7 +141,7 @@ gnss-visualizer /dev/ttyUSB0
 - [ ] Set up whole file reading for timeseries plots
 - [ ] More plots
 - [x] Allow playback after reading the whole file
-- [ ] Configurable wait delay
+- [x] Configurable wait delay
 - [ ] Non-ubx file support (some basic plots?)
 - [ ] Even more plots
 - [ ] Truth location handling (coordinates / files)
