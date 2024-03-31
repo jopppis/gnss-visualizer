@@ -32,7 +32,7 @@ class PlotHandler:
     SPACER_HEIGHT = 25
 
     def __init__(
-        self, doc: Document, input_is_file: bool, default_simulate_wait_s: float
+        self, doc: Document, input_is_file: bool, default_simulate_wait_s: float = 0.1
     ):
         """Initialize an instance."""
         self.doc = doc
