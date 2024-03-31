@@ -20,11 +20,9 @@ class UbxStreamReader:
         self,
         file: Path,
         plot_handler: PlotHandler,
-        simulate_wait_s: float | None = None,
     ):
         self.file = file
         self.plot_handler = plot_handler
-        self.simulate_wait_s = simulate_wait_s
 
     def read_messages_of_type(self, msg_type: str) -> None:
         """Read UBX messages of a given type."""
