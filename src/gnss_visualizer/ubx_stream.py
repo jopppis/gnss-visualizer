@@ -9,8 +9,8 @@ from time import sleep
 import pyubx2
 from serial import Serial, SerialException
 
-from gnss_visualizer.plot_handler import PlotHandler
 from gnss_visualizer.protocols.ubx import get_full_ubx_msg_id
+from gnss_visualizer.ui_handler import UIHandler
 
 LOGGER = logging.getLogger(__name__)
 
@@ -19,10 +19,10 @@ class UbxStreamReader:
     def __init__(
         self,
         file: Path,
-        plot_handler: PlotHandler,
+        ui_handler: UIHandler,
     ):
         self.file = file
-        self.plot_handler = plot_handler
+        self.ui_handler = ui_handler
 
     def read_messages_of_type(self, msg_type: str) -> None:
         """Read UBX messages of a given type."""
@@ -87,9 +87,9 @@ class UbxStreamReader:
         """Read UBX stream from a stream."""
         ubr = pyubx2.UBXReader(stream, protfilter=pyubx2.UBX_PROTOCOL)
         while True:
-            if self.plot_handler.controls.request_file_rewind:
+            if self.ui_handler.controls.request_file_rewind:
                 stream.seek(0)
-                self.plot_handler.controls.request_file_rewind = False
+                self.ui_handler.controls.request_file_rewind = False
             msg = ubr.read()[1]
             if msg is None:
                 # sleep to avoid busy loop
@@ -102,23 +102,23 @@ class UbxStreamReader:
 
             # check the message type
             msg_str = get_full_ubx_msg_id(msg)
-            if msg_str in self.plot_handler.required_msgs:
+            if msg_str in self.ui_handler.required_msgs:
                 self._read_msg(msg, msg_str)
 
             if (
                 msg_str == "UBX-NAV-PVT"
                 and self.file.is_file()
-                and self.plot_handler.controls.wait_time_slider.value
+                and self.ui_handler.controls.wait_time_slider.value
             ):
                 LOGGER.info(
-                    f"Simulating wait of {self.plot_handler.controls.wait_time_slider.value} s"
+                    f"Simulating wait of {self.ui_handler.controls.wait_time_slider.value} s"
                 )
-                sleep(self.plot_handler.controls.wait_time_slider.value)
+                sleep(self.ui_handler.controls.wait_time_slider.value)
 
     def _read_msg(self, msg: pyubx2.UBXMessage, msg_str: str) -> None:
         """Read UBX message."""
         LOGGER.debug(f"Message: {msg_str}")
-        for plot in self.plot_handler.get_plots_for_msg(msg_str):
-            self.plot_handler.doc.add_next_tick_callback(
-                partial(self.plot_handler.update_plot, plot=plot, msg=msg)
+        for plot in self.ui_handler.get_plots_for_msg(msg_str):
+            self.ui_handler.doc.add_next_tick_callback(
+                partial(self.ui_handler.update_plot, plot=plot, msg=msg)
             )

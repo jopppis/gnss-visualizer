@@ -12,10 +12,10 @@ from threading import Thread
 
 from bokeh.plotting import curdoc
 
-from gnss_visualizer.plot_handler import LOGGER as plot_logger
-from gnss_visualizer.plot_handler import PlotHandler
 from gnss_visualizer.ubx_stream import LOGGER as ubx_logger
 from gnss_visualizer.ubx_stream import UbxStreamReader
+from gnss_visualizer.ui_handler import LOGGER as plot_logger
+from gnss_visualizer.ui_handler import UIHandler
 
 LOGGER = logging.getLogger(__name__)
 
@@ -72,10 +72,8 @@ def run_app(args: argparse.Namespace) -> None:
     """
     LOGGER.info("Starting GNSS Visualizer application.")
 
-    plot_handler = PlotHandler(
-        curdoc(), args.input.is_file(), args.default_simulate_wait_s
-    )
-    stream_reader = UbxStreamReader(args.input, plot_handler)
+    ui_handler = UIHandler(curdoc(), args.input.is_file(), args.default_simulate_wait_s)
+    stream_reader = UbxStreamReader(args.input, ui_handler)
 
     thread = Thread(target=stream_reader.read)
     thread.start()

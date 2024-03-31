@@ -25,8 +25,8 @@ lang.install()
 _ = lang.gettext
 
 
-class PlotHandler:
-    """Generate plots from GNSS receiver messages."""
+class UIHandler:
+    """User interface handler for GNSS Visualizer."""
 
     TITLE = _("GNSS Visualizer")
     SPACER_HEIGHT = 25
@@ -160,7 +160,7 @@ class SideLayoutSection(ABC):
 class SideLayoutConfiguration(SideLayoutSection):
     """Configuration for side layout."""
 
-    def __init__(self, plot_handler: PlotHandler) -> None:
+    def __init__(self, plot_handler: UIHandler) -> None:
         """Initialize an instance."""
         super().__init__()
 

@@ -18,15 +18,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.14.0\n"
 
-#: src/gnss_visualizer/plot_handler.py:30
+#: src/gnss_visualizer/ui_handler.py:30
 msgid "GNSS Visualizer"
 msgstr ""
 
-#: src/gnss_visualizer/plot_handler.py:126
+#: src/gnss_visualizer/ui_handler.py:126
 msgid "Configuration"
 msgstr ""
 
-#: src/gnss_visualizer/plot_handler.py:128
+#: src/gnss_visualizer/ui_handler.py:128
 msgid "Select plots"
 msgstr ""
 
@@ -65,4 +65,3 @@ msgstr ""
 #: src/gnss_visualizer/plots/map.py:158
 msgid "Position map"
 msgstr ""
-
