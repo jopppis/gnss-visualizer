@@ -15,6 +15,7 @@ charset-normalizer==3.3.2
     # via requests
 colorama==0.4.6
     # via tox
+coverage==7.4.4
 cryptography==42.0.5
     # via secretstorage
 decorator==5.1.1
@@ -42,7 +43,7 @@ ipython==8.23.0
     # via ipdb
 jaraco-classes==3.4.0
     # via keyring
-jaraco-context==5.1.0
+jaraco-context==5.2.0
     # via keyring
 jaraco-functools==4.0.0
     # via keyring
@@ -139,6 +140,7 @@ types-colorama==0.4.15.20240311
 types-decorator==5.1.8.20240310
 types-docutils==0.20.0.20240406
     # via types-pygments
+types-openpyxl==3.1.0.20240402
 types-pillow==10.2.0.20240406
 types-pycurl==7.45.2.20240311
 types-pygments==2.17.0.20240310
