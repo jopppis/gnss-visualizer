@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2024-03-27 13:13+0200\n"
+"POT-Creation-Date: 2024-04-06 22:43+0300\n"
 "PO-Revision-Date: 2024-03-17 14:55+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -18,16 +18,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.14.0\n"
 
-#: src/gnss_visualizer/ui_handler.py:30
+#: src/gnss_visualizer/ui_handler.py:41
 msgid "GNSS Visualizer"
 msgstr ""
 
-#: src/gnss_visualizer/ui_handler.py:126
+#: src/gnss_visualizer/ui_handler.py:242
 msgid "Configuration"
 msgstr ""
 
-#: src/gnss_visualizer/ui_handler.py:128
+#: src/gnss_visualizer/ui_handler.py:261
 msgid "Select plots"
+msgstr ""
+
+#: src/gnss_visualizer/ui_handler.py:286
+msgid "Rewind file"
+msgstr ""
+
+#: src/gnss_visualizer/ui_handler.py:295
+msgid "Wait between epochs (s)"
+msgstr ""
+
+#: src/gnss_visualizer/ui_handler.py:301
+msgid "Controls"
 msgstr ""
 
 #: src/gnss_visualizer/plots/cno.py:35
@@ -42,26 +54,35 @@ msgstr ""
 msgid "Signal strength"
 msgstr ""
 
-#: src/gnss_visualizer/plots/map.py:46
+#: src/gnss_visualizer/plots/map.py:57
 msgid "Position map (live)"
 msgstr ""
 
-#: src/gnss_visualizer/plots/map.py:60
+#: src/gnss_visualizer/plots/map.py:67
 msgid "Center map"
 msgstr ""
 
-#: src/gnss_visualizer/plots/map.py:150
+#: src/gnss_visualizer/plots/map.py:86
+msgid "Keep centered"
+msgstr ""
+
+#: src/gnss_visualizer/plots/map.py:113
+msgid "Autozoom"
+msgstr ""
+
+#: src/gnss_visualizer/plots/map.py:204
 msgid "Latitude"
 msgstr ""
 
-#: src/gnss_visualizer/plots/map.py:151
+#: src/gnss_visualizer/plots/map.py:205
 msgid "Longitude"
 msgstr ""
 
-#: src/gnss_visualizer/plots/map.py:152
+#: src/gnss_visualizer/plots/map.py:206
 msgid "Horizontal Accuracy"
 msgstr ""
 
-#: src/gnss_visualizer/plots/map.py:158
+#: src/gnss_visualizer/plots/map.py:212
 msgid "Position map"
 msgstr ""
+
