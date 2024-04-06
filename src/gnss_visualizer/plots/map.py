@@ -3,14 +3,18 @@
 import gettext
 import locale
 import logging
-from math import isnan
 from pathlib import Path
 from typing import Any
 
 import pyubx2
 import xyzservices.providers as xyz
 from bokeh.layouts import Spacer, column, row
-from bokeh.models import ColumnDataSource, Toggle  # type: ignore[attr-defined]
+from bokeh.models import (  # type: ignore[attr-defined]
+    Button,
+    ColumnDataSource,
+    Toggle,
+    UIElement,
+)
 from bokeh.plotting import figure
 
 from gnss_visualizer.constants import TOP_SPACER_HEIGHT
@@ -34,8 +38,13 @@ class LivePositionMapPlot(GenericContinuousPlot):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         """Init the instance."""
         super().__init__(*args, **kwargs)
-        self._center_map_toggle = self._generate_center_map_toggle()
-        self._autozoom_map_toggle = self._generate_autozoom_toggle()
+        self._side_layout = column(
+            height=self.MAP_PLOT_HEIGHT,
+        )
+
+        self._center_map_button = self._generate_center_map_button()
+        self._autocenter_toggle = self._generate_autocenter_toggle()
+        self._autozoom_toggle = self._generate_autozoom_toggle()
 
     @property
     def visible_on_start(self) -> bool:
@@ -52,14 +61,29 @@ class LivePositionMapPlot(GenericContinuousPlot):
         """Get required messages for this plot."""
         return ["UBX-NAV-PVT"]
 
-    def _generate_center_map_toggle(self) -> Toggle:
+    def _generate_center_map_button(self) -> Button:
+        """Add center map button."""
+        button = Button(
+            label=_("Center map"),
+            button_type="success",
+            sizing_mode="stretch_width",
+        )
+
+        def click(_: Any) -> None:
+            """Change apperance of the button upon a click."""
+            self._update_canvas_extent(force_center=True)
+
+        button.on_click(click)
+        return button
+
+    def _generate_autocenter_toggle(self) -> Toggle:
         """Add center map toggle button.
 
         The button toggles map centering and changes color based on the state of
         the centering.
         """
         toggle = Toggle(
-            label=_("Center map"),
+            label=_("Keep centered"),
             button_type="success",
             active=True,
             sizing_mode="stretch_width",
@@ -72,7 +96,9 @@ class LivePositionMapPlot(GenericContinuousPlot):
             else:
                 toggle.button_type = "default"
                 # never autozoom when centering is disabled
-                self._autozoom_map_toggle.active = False
+                self._autozoom_toggle.active = False
+            if self._side_layout is not None:
+                self._side_layout.children = self._get_side_layout_children()  # type: ignore[assignment]
 
         toggle.on_click(click)
         return toggle
@@ -94,20 +120,25 @@ class LivePositionMapPlot(GenericContinuousPlot):
             """Change apperance of the button upon a click."""
             if toggle.active:
                 toggle.button_type = "success"
-                # always center map when autozoom is active
-                self._center_map_toggle.active = True
+                # always autocenter when autozoom is active
+                self._autocenter_toggle.active = True
             else:
                 toggle.button_type = "default"
+            self._side_layout.children = self._get_side_layout_children()  # type: ignore[assignment]
 
         toggle.on_click(click)
         return toggle
 
-    def _update_canvas_extent(self) -> None:
+    def _update_canvas_extent(self, force_center: bool = False) -> None:
         """Update map canvas extents."""
         if self.datasource is None or self.figure is None:
             return
 
-        if not self._center_map_toggle.active and not self._autozoom_map_toggle.active:
+        if (
+            not force_center
+            and not self._autocenter_toggle.active
+            and not self._autozoom_toggle.active
+        ):
             return
 
         hacc = self.datasource.data["h_acc"][0]
@@ -124,16 +155,10 @@ class LivePositionMapPlot(GenericContinuousPlot):
             aspect_ratio = 1
 
         dx = dx_orig
-        if self._autozoom_map_toggle.active:
+        if self._autozoom_toggle.active:
             # autozoom aka set x scale based on the horizontal accuracy
-            if hacc > 10000:
-                dx = 10000.0 * 1e3
-            elif hacc > 1000:
-                dx = 100.0 * 1e3
-            elif hacc > 100:
-                dx = 10 * 1e3
-            elif hacc > 25 or isnan(dx_orig):
-                dx = hacc * 5
+            # limit to 100 meters at most to avoid too much zooming
+            dx = max(100, hacc * 5)
 
         dy = dx * aspect_ratio
         self.figure.x_range.update(  # type: ignore[attr-defined]
@@ -220,13 +245,21 @@ class LivePositionMapPlot(GenericContinuousPlot):
 
         self._finalize_figure()
 
-        self._generate_center_map_toggle()
+        self._side_layout.children = self._get_side_layout_children()  # type: ignore[assignment]
 
-        side_layout = column(
+        self.main_layout = row(self.figure, self._side_layout, sizing_mode="inherit")
+
+    def _get_side_layout_children(self) -> list[UIElement]:
+        """Generate side layout for the plot."""
+        items = [
             Spacer(height=TOP_SPACER_HEIGHT, sizing_mode="fixed"),
-            self._center_map_toggle,
-            self._autozoom_map_toggle,
-            height=self.MAP_PLOT_HEIGHT,
+        ]
+        if self._autocenter_toggle is not None and not self._autocenter_toggle.active:
+            items.append(self._center_map_button)
+        items.extend(
+            [
+                self._autocenter_toggle,
+                self._autozoom_toggle,
+            ]
         )
-
-        self.main_layout = row(self.figure, side_layout, sizing_mode="inherit")
+        return items
