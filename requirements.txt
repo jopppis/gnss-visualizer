@@ -3,7 +3,7 @@
 bokeh==3.4.0
 certifi==2024.2.2
     # via pyproj
-contourpy==1.2.0
+contourpy==1.2.1
     # via bokeh
 jinja2==3.1.3
     # via bokeh
@@ -18,12 +18,12 @@ packaging==24.0
     # via bokeh
 pandas==2.2.1
     # via bokeh
-pillow==10.2.0
+pillow==10.3.0
     # via bokeh
-pynmeagps==1.0.33
+pynmeagps==1.0.35
     # via pyubx2
 pyproj==3.6.1
-pyrtcm==1.0.16
+pyrtcm==1.0.17
     # via pyubx2
 pyserial==3.5
 python-dateutil==2.9.0.post0
@@ -39,5 +39,5 @@ tornado==6.4
     # via bokeh
 tzdata==2024.1
     # via pandas
-xyzservices==2023.10.1
+xyzservices==2024.4.0
     # via bokeh

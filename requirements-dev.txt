@@ -2,7 +2,7 @@
 #    uv pip compile /home/jop/dev/gnss-visualizer/requirements-dev.in
 asttokens==2.4.1
     # via stack-data
-build==1.1.1
+build==1.2.1
 cachetools==5.3.3
     # via tox
 certifi==2024.2.2
@@ -27,20 +27,24 @@ docutils==0.20.1
     # via readme-renderer
 executing==2.0.1
     # via stack-data
-filelock==3.13.1
+filelock==3.13.3
     # via
     #   tox
     #   virtualenv
 idna==3.6
     # via requests
-importlib-metadata==7.0.2
+importlib-metadata==7.1.0
     # via twine
 iniconfig==2.0.0
     # via pytest
 ipdb==0.13.13
-ipython==8.22.2
+ipython==8.23.0
     # via ipdb
-jaraco-classes==3.3.1
+jaraco-classes==3.4.0
+    # via keyring
+jaraco-context==5.1.0
+    # via keyring
+jaraco-functools==4.0.0
     # via keyring
 jedi==0.19.1
     # via ipython
@@ -48,7 +52,7 @@ jeepney==0.8.0
     # via
     #   keyring
     #   secretstorage
-keyring==24.3.1
+keyring==25.1.0
     # via twine
 markdown-it-py==3.0.0
     # via rich
@@ -57,19 +61,24 @@ matplotlib-inline==0.1.6
 mdurl==0.1.2
     # via markdown-it-py
 more-itertools==10.2.0
-    # via jaraco-classes
+    # via
+    #   jaraco-classes
+    #   jaraco-functools
 mypy==1.9.0
 mypy-extensions==1.0.0
     # via mypy
-nh3==0.2.15
+nh3==0.2.17
     # via readme-renderer
+numpy==1.26.4
+    # via pandas-stubs
 packaging==24.0
     # via
     #   build
     #   pyproject-api
     #   pytest
     #   tox
-parso==0.8.3
+pandas-stubs==2.2.1.240316
+parso==0.8.4
     # via jedi
 pexpect==4.9.0
     # via ipython
@@ -90,7 +99,7 @@ ptyprocess==0.7.0
     # via pexpect
 pure-eval==0.2.2
     # via stack-data
-pycparser==2.21
+pycparser==2.22
     # via cffi
 pygments==2.17.2
     # via
@@ -120,13 +129,26 @@ six==1.16.0
     # via asttokens
 stack-data==0.6.3
     # via ipython
-tox==4.14.1
+tox==4.14.2
 traitlets==5.14.2
     # via
     #   ipython
     #   matplotlib-inline
 twine==5.0.0
-typing-extensions==4.10.0
+types-colorama==0.4.15.20240311
+types-decorator==5.1.8.20240310
+types-docutils==0.20.0.20240406
+    # via types-pygments
+types-pillow==10.2.0.20240406
+types-pycurl==7.45.2.20240311
+types-pygments==2.17.0.20240310
+types-pytz==2024.1.0.20240203
+    # via pandas-stubs
+types-pyyaml==6.0.12.20240311
+types-setuptools==69.2.0.20240317
+    # via types-pygments
+types-six==1.16.21.20240311
+typing-extensions==4.11.0
     # via mypy
 urllib3==2.2.1
     # via

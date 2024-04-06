@@ -45,6 +45,16 @@ gnss-visualizer = "gnss_visualizer.run_server:main"
 
 [tool.mypy]
 strict = true
+exclude = ["tests/"]
+
+[[tool.mypy.overrides]]
+module = [
+    "pyubx2",
+    "xyzservices",
+    "xyzservices.providers",
+    "serial"
+]
+ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = [

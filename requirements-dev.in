@@ -7,3 +7,14 @@ pytest
 tox
 build
 twine
+pandas-stubs
+types-Pillow
+types-PyYAML
+types-Pygments
+types-colorama
+types-decorator
+types-pycurl
+types-setuptools
+types-six
+types-pytest
+types-openpyxl

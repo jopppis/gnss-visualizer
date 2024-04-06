@@ -21,3 +21,8 @@ repos:
             - types-decorator
             - types-pycurl
             - types-six
+            - pytest
+            - bokeh
+            - pyubx2
+            - serial
+            - xyzservices

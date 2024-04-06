@@ -81,12 +81,12 @@ class GenericPlot(ABC):
         self.figure.yaxis.axis_label_text_font_size = "14pt"
         self.figure.xaxis.major_label_text_font_size = "12pt"
         self.figure.yaxis.major_label_text_font_size = "12pt"
-        self.figure.title.text_font_size = "16pt"
+        self.figure.title.text_font_size = "16pt"  # type: ignore[attr-defined]
 
         self.figure.xgrid.grid_line_color = None
         self.figure.ygrid.grid_line_color = None
 
-        self.figure.toolbar.autohide = True
+        self.figure.toolbar.autohide = True  # type: ignore[attr-defined]
 
         # mark the plot as initialized
         self.initialized = True

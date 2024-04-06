@@ -56,7 +56,7 @@ class LiveSVCnoPlot(GenericContinuousPlot):
                     cnos[rinex_sv_id] = cno
 
         # convert to dict suitable for column data source
-        data: dict[str, list[Any]] = {
+        data: dict[str, Any] = {
             "x": list(cnos.keys()),
             "y": list(cnos.values()),
         }
@@ -68,8 +68,8 @@ class LiveSVCnoPlot(GenericContinuousPlot):
             self.init_plot(ColumnDataSource(data=data))
         else:
             self.datasource.data = data
-            self.figure.x_range.factors = self._sort_rinex_sv_ids(
-                set(list(self.figure.x_range.factors) + data["x"])
+            self.figure.x_range.factors = self._sort_rinex_sv_ids(  # type: ignore[attr-defined]
+                set(list(self.figure.x_range.factors) + data["x"])  # type: ignore[attr-defined]
             )
 
     def init_plot(self, datasource: ColumnDataSource) -> None:
@@ -97,8 +97,8 @@ class LiveSVCnoPlot(GenericContinuousPlot):
             x="x", top="y", source=self.datasource, width=0.9, color="color"
         )
 
-        self.figure.y_range.start = 0
-        self.figure.y_range.end = 64
+        self.figure.y_range.start = 0  # type: ignore[attr-defined]
+        self.figure.y_range.end = 64  # type: ignore[attr-defined]
         self.figure.xaxis.major_label_orientation = 3.14 / 4
 
         self.figure.yaxis.axis_label = y_label

@@ -3,17 +3,27 @@
 import gettext
 import locale
 import logging
+import typing
 from abc import ABC, abstractmethod
+from functools import partial
 from pathlib import Path
-from typing import Any
+from threading import Thread
 
 import pyubx2
-from bokeh.document import Document
 from bokeh.layouts import Spacer, column, row
-from bokeh.models import Button, Div, LayoutDOM, MultiChoice, Slider, Switch
+from bokeh.models import (  # type: ignore[attr-defined]
+    Button,
+    Div,
+    LayoutDOM,
+    MultiChoice,
+    Slider,
+    Switch,
+)
+from bokeh.plotting import curdoc
 
 import gnss_visualizer.plots
 from gnss_visualizer.plots.generic_plot import GenericContinuousPlot, GenericPlot
+from gnss_visualizer.ubx_stream import UbxStreamReader
 
 LOGGER = logging.getLogger(__name__)
 
@@ -31,11 +41,10 @@ class UIHandler:
     TITLE = _("GNSS Visualizer")
     SPACER_HEIGHT = 25
 
-    def __init__(
-        self, doc: Document, input_is_file: bool, default_simulate_wait_s: float = 0.1
-    ):
+    def __init__(self, input_path: Path, default_simulate_wait_s: float = 0.1):
         """Initialize an instance."""
-        self.doc = doc
+        self.doc = curdoc()
+        self.input = input_path
 
         self.available_plots: tuple[GenericPlot, ...] = (
             gnss_visualizer.plots.LivePositionMapPlot(),
@@ -46,24 +55,18 @@ class UIHandler:
         self._side_column = column()
 
         self.config = SideLayoutConfiguration(self)
-        self.controls = SideLayoutControls(input_is_file, default_simulate_wait_s)
+        self.controls = SideLayoutControls(self, default_simulate_wait_s)
 
-        root_row = row(
-            Spacer(width=20),
-            self._main_column,
-            Spacer(width=40),
-            self._side_column,
-            Spacer(width=100),
-            sizing_mode="stretch_width",
+        self.doc.add_root(self._get_root_layout())
+
+        self.stream_reader = UbxStreamReader(
+            self.input,
+            process_msg_callback=self.process_msg,
+            get_required_msgs=self.get_required_msgs,
+            get_wait_time=self.get_wait_time,
         )
-        root_column = column(self.title, root_row, sizing_mode="stretch_width")
-
-        self.doc.add_root(root_column)
-
-    @property
-    def required_msgs(self) -> set[str]:
-        """Get required messages for all selected plots."""
-        return {msg for plot in self.selected_plots for msg in plot.required_messages}
+        self._reading_thread: Thread | None = None
+        self.read_input()
 
     @property
     def selected_plots(self) -> list[GenericPlot]:
@@ -88,6 +91,53 @@ class UIHandler:
             sizing_mode="stretch_width",
         )
 
+    def get_required_msgs(self) -> set[str]:
+        """Get required messages for all selected plots."""
+        return {msg for plot in self.selected_plots for msg in plot.required_messages}
+
+    def get_wait_time(self) -> float:
+        """Get wait time from user configuration."""
+        return typing.cast(float, self.controls.wait_time_slider.value)
+
+    def _get_root_layout(self) -> LayoutDOM:
+        """Get the root layout."""
+        root_row = row(
+            Spacer(width=20),
+            self._main_column,
+            Spacer(width=40),
+            self._side_column,
+            Spacer(width=100),
+            sizing_mode="stretch_width",
+        )
+        return column(self.title, root_row, sizing_mode="stretch_width")
+
+    def rewind_file(self) -> None:
+        """Rewind the input file."""
+        if not self.input.is_file():
+            return
+
+        if self._reading_thread is None or not self._reading_thread.is_alive():
+            self.read_input()
+        else:
+            self.stream_reader.rewind_file()
+
+    def read_input(self) -> None:
+        """Read input file or device."""
+        self._reading_thread = Thread(target=self.stream_reader.read)
+        self._reading_thread.start()
+
+    def process_msg(self, msg: pyubx2.UBXMessage, msg_str: str) -> None:
+        """Process UBX message.
+
+        Handle read UBX message in a thread-safe way.
+        """
+        LOGGER.debug(f"Message: {msg_str}")
+        for plot in self.get_plots_for_msg(msg_str):
+            # run the update in the main thread
+            self.doc.add_next_tick_callback(
+                partial(self.update_plot, plot=plot, msg=msg)  # type: ignore[arg-type]
+            )
+
     def update_layout(self) -> None:
         """Add plot to column.
 
@@ -98,12 +148,12 @@ class UIHandler:
             for plot in self.selected_plots
             if plot.initialized and plot.figure is not None
         ]
-        self._main_column.children = []
+        self._main_column.children = []  # type: ignore[assignment]
         for plot in plots_to_add:
-            self._main_column.children.append(plot.main_layout)
-            self._main_column.children.append(Spacer(height=self.SPACER_HEIGHT))
+            self._main_column.children.append(plot.main_layout)  # type: ignore[attr-defined]
+            self._main_column.children.append(Spacer(height=self.SPACER_HEIGHT))  # type: ignore[attr-defined]
 
-        self._side_column.children = [self.controls.layout, self.config.layout]
+        self._side_column.children = [self.controls.layout, self.config.layout]  # type: ignore[assignment]
 
     async def update_plot(
         self, plot: GenericContinuousPlot, msg: pyubx2.UBXMessage
@@ -160,28 +210,28 @@ class SideLayoutSection(ABC):
 class SideLayoutConfiguration(SideLayoutSection):
     """Configuration for side layout."""
 
-    def __init__(self, plot_handler: UIHandler) -> None:
+    def __init__(self, ui_handler: UIHandler) -> None:
         """Initialize an instance."""
         super().__init__()
 
-        self.plot_handler = plot_handler
+        self.ui_handler = ui_handler
 
         self.plot_selection = self._generate_plot_selection()
 
     def _generate_plot_selection(self) -> MultiChoice:
         """Generate plot selection configuration."""
-        options = [plot.name for plot in self.plot_handler.available_plots]
+        options = [plot.name for plot in self.ui_handler.available_plots]
         default = [
             plot.name
-            for plot in self.plot_handler.available_plots
+            for plot in self.ui_handler.available_plots
             if plot.visible_on_start
         ]
         plot_selection = MultiChoice(
             value=default, options=options, sizing_mode="inherit"
         )
 
-        def selection_changed(_attr: str, _old: Any, _new: Any) -> None:
-            self.plot_handler.update_layout()
+        def selection_changed(_attr: str, _old: typing.Any, _new: typing.Any) -> None:
+            self.ui_handler.update_layout()
 
         plot_selection.on_change("value", selection_changed)
 
@@ -194,7 +244,7 @@ class SideLayoutConfiguration(SideLayoutSection):
         visibility_switch = Switch(active=False, align="center")
 
         def toggle_visibility(_attr: str, _old: bool, new: bool) -> None:
-            config_items.visible = new
+            config_items.visible = new  # type: ignore[assignment]
 
         visibility_switch.on_change("active", toggle_visibility)
         return row(
@@ -218,7 +268,7 @@ class SideLayoutConfiguration(SideLayoutSection):
             width=400,
             sizing_mode="inherit",
         )
-        config_items.visible = False
+        config_items.visible = False  # type: ignore[assignment]
 
         title_row = self._generate_title_row(config_items)
 
@@ -228,17 +278,14 @@ class SideLayoutConfiguration(SideLayoutSection):
 class SideLayoutControls(SideLayoutSection):
     """Controls for the visualization."""
 
-    def __init__(self, input_is_file: bool, default_simulate_wait_s: float) -> None:
+    def __init__(self, ui_handler: UIHandler, default_simulate_wait_s: float) -> None:
         """Initialize the controls."""
         super().__init__()
-
-        # flag for rewinding the stream
-        self.request_file_rewind = False
-
+        self.ui_handler = ui_handler
         self.rewind_button = Button(
             label=_("Rewind file"), button_type="danger", visible=False
         )
-        self.rewind_button.visible = input_is_file
+        self.rewind_button.visible = self.ui_handler.input.is_file()
 
         self.wait_time_slider = Slider(
             start=0,
@@ -247,16 +294,16 @@ class SideLayoutControls(SideLayoutSection):
             step=0.1,
             title=_("Wait between epochs (s)"),
         )
-        self.wait_time_slider.visible = input_is_file
+        self.wait_time_slider.visible = self.ui_handler.input.is_file()
 
     def _generate_layout(self) -> LayoutDOM:
         """Generate controls section for the side column."""
         title = self._make_side_layout_title_div(f"{_('Controls')}", level=1)
 
-        def request_rewind(_: Any) -> None:
-            self.request_file_rewind = True
+        def rewind(_: typing.Any) -> None:
+            self.ui_handler.rewind_file()
 
-        self.rewind_button.on_click(request_rewind)
+        self.rewind_button.on_click(rewind)
 
         control_items = column(
             self.rewind_button,
@@ -264,7 +311,7 @@ class SideLayoutControls(SideLayoutSection):
             width=400,
             sizing_mode="inherit",
         )
-        control_items.visible = False
+        control_items.visible = False  # type: ignore[assignment]
         visibility_switch = Switch(active=False, align="center")
         title_row = row(
             title,
@@ -274,7 +321,7 @@ class SideLayoutControls(SideLayoutSection):
         )
 
         def toggle_visibility(attr: str, old: bool, new: bool) -> None:
-            control_items.visible = new
+            control_items.visible = new  # type: ignore[assignment]
 
         visibility_switch.on_change("active", toggle_visibility)
         return column(title_row, control_items, sizing_mode="stretch_width")

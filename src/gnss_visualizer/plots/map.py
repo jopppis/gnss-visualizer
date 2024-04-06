@@ -10,7 +10,7 @@ from typing import Any
 import pyubx2
 import xyzservices.providers as xyz
 from bokeh.layouts import Spacer, column, row
-from bokeh.models import ColumnDataSource, Toggle
+from bokeh.models import ColumnDataSource, Toggle  # type: ignore[attr-defined]
 from bokeh.plotting import figure
 
 from gnss_visualizer.constants import TOP_SPACER_HEIGHT
@@ -116,10 +116,10 @@ class LivePositionMapPlot(GenericContinuousPlot):
             return
 
         # current plot range
-        dx_orig = (self.figure.x_range.end - self.figure.x_range.start) / 2
+        dx_orig = (self.figure.x_range.end - self.figure.x_range.start) / 2  # type: ignore[attr-defined]
 
         try:
-            aspect_ratio = self.figure.inner_height / self.figure.inner_width
+            aspect_ratio = self.figure.inner_height / self.figure.inner_width  # type: ignore[operator]
         except ValueError:
             aspect_ratio = 1
 
@@ -136,11 +136,11 @@ class LivePositionMapPlot(GenericContinuousPlot):
                 dx = hacc * 5
 
         dy = dx * aspect_ratio
-        self.figure.x_range.update(
+        self.figure.x_range.update(  # type: ignore[attr-defined]
             start=self.datasource.data["x"][0] - dx,
             end=self.datasource.data["x"][0] + dx,
         )
-        self.figure.y_range.update(
+        self.figure.y_range.update(  # type: ignore[attr-defined]
             start=self.datasource.data["y"][0] - dy,
             end=self.datasource.data["y"][0] + dy,
         )
@@ -164,7 +164,7 @@ class LivePositionMapPlot(GenericContinuousPlot):
         LOGGER.debug(f"Lat: {lat}, Lon: {lon}, hAcc: {h_acc}")
 
         x, y = lat_lon_to_web_mercator(lat, lon)
-        data = dict(x=[x], y=[y], h_acc=[h_acc], lat=[lat], lon=[lon])
+        data: dict[str, Any] = dict(x=[x], y=[y], h_acc=[h_acc], lat=[lat], lon=[lon])
         if self.figure is None or self.datasource is None:
             self.init_plot(ColumnDataSource(data=data))
         else:

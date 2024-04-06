@@ -8,12 +8,8 @@ generates plots from the data.
 import argparse
 import logging
 from pathlib import Path
-from threading import Thread
-
-from bokeh.plotting import curdoc
 
 from gnss_visualizer.ubx_stream import LOGGER as ubx_logger
-from gnss_visualizer.ubx_stream import UbxStreamReader
 from gnss_visualizer.ui_handler import LOGGER as plot_logger
 from gnss_visualizer.ui_handler import UIHandler
 
@@ -72,8 +68,4 @@ def run_app(args: argparse.Namespace) -> None:
     """
     LOGGER.info("Starting GNSS Visualizer application.")
 
-    ui_handler = UIHandler(curdoc(), args.input.is_file(), args.default_simulate_wait_s)
-    stream_reader = UbxStreamReader(args.input, ui_handler)
-
-    thread = Thread(target=stream_reader.read)
-    thread.start()
+    UIHandler(args.input, args.default_simulate_wait_s)
