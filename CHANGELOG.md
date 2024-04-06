@@ -8,13 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
--
 
 ### Changed
--
 
 ### Removed
--
+
+## [0.0.7] - 2024-04-06
+
+### Added
+- Plot selection mechanism
+- More tests
+- Rewind playback mechanism
+- Configurable playback speed control
+
+### Changed
+- Improved module architecture
+
 
 ## [0.0.6] - 2024-03-18
 
