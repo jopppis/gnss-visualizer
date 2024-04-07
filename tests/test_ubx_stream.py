@@ -71,12 +71,23 @@ def test_callback_invocation(
 ) -> None:
     """Test if the callback function is correctly invoked with the expected message."""
     ubx_stream_reader.read()
-    ubx_stream_reader.process_msg_callback.assert_called_once()  # type: ignore[attr-defined]
+    ubx_stream_reader.process_msg_callback.assert_called_once()
     # check that process_msg callback had the expected arguments
-    msg: pyubx2.UBXMessage = ubx_stream_reader.process_msg_callback.call_args[0][0]  # type: ignore[attr-defined]
-    msg_str = ubx_stream_reader.process_msg_callback.call_args[0][1]  # type: ignore[attr-defined]
+    msg: pyubx2.UBXMessage = ubx_stream_reader.process_msg_callback.call_args[0][0]
+    msg_str = ubx_stream_reader.process_msg_callback.call_args[0][1]
     assert msg.serialize() == nav_pvt_message_bytes
     assert msg_str == "UBX-NAV-PVT"
+
+
+def test_rewind_file_stream(ubx_stream_reader: UbxStreamReader) -> None:
+    """Test if the file stream is rewound when the end is reached."""
+    assert not ubx_stream_reader._rewind_requested
+    ubx_stream_reader.rewind_file()
+    assert ubx_stream_reader._rewind_requested
+    ubx_stream_reader.read()
+    assert not ubx_stream_reader._rewind_requested
+    ubx_stream_reader.rewind_file()
+    assert ubx_stream_reader._rewind_requested
 
 
 # def test_serial_exception_handling(tmp_path):
