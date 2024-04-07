@@ -92,11 +92,11 @@ def test_rewind_file(ui_handler: UIHandler) -> None:
         ui_handler.stream_reader.rewind_file.assert_called_once()
 
 
-# def test_update_layout(ui_handler: UIHandler):
-#     """Test the update_layout method."""
-#     ui_handler.update_layout()
-#     assert len(ui_handler._main_column.children) > 0
-#     assert len(ui_handler._side_column.children) > 0
+def test_update_layout_no_plots(ui_handler: UIHandler):
+    """Test the update_layout method."""
+    ui_handler.update_layout()
+    assert len(ui_handler._main_column.children) == 0
+    assert len(ui_handler._side_column.children) == 0
 
 
 # def test_update_plot(ui_handler: UIHandler):
