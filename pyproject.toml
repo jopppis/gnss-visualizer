@@ -72,7 +72,6 @@ legacy_tox_ini = """
   min_version = 4.0
   env_list =
     clean
-    py310
     py311
     py312
     report
@@ -82,8 +81,8 @@ legacy_tox_ini = """
     pytest
     pytest-cov
   depends =
-    {py310,py311,py312}: clean
-    report: py310,py311,py312
+    {py311,py312}: clean
+    report: py311,py312
   commands = pytest --cov --cov-append --cov-report=term-missing
   [testenv:clean]
   deps = coverage
