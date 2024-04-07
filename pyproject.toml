@@ -75,28 +75,12 @@ legacy_tox_ini = """
     py311
     py312
     report
-
   [testenv]
   deps =
     pytest
-    pytest-cov
-  depends =
-    {py311,py312}: clean
-    report: py311,py312
-  commands = pytest --cov --cov-append --cov-report=term-missing
-  [testenv:clean]
-  deps = coverage
-  skip_install = true
-  commands = coverage erase
-  [testenv:report]
-  deps = coverage
-  skip_install = true
-  commands =
-      coverage report
-      coverage html
+  commands = pytest
   [gh]
   python =
     3.12 = py312
     3.11 = py311
-    3.10 = py310
 """
