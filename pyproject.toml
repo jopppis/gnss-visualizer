@@ -61,6 +61,11 @@ testpaths = [
     "tests",
 ]
 
+[tool.coverage.run]
+    include = [
+        "src/*",
+    ]
+
 [tool.tox]
 legacy_tox_ini = """
     [tox]
@@ -71,8 +76,14 @@ legacy_tox_ini = """
         py312
 
     [testenv]
-    deps = pytest
-    commands = pytest
+    deps =
+      pytest
+      pytest-cov
+    commands = pytest --cov --cov-append --cov-report=term-missing
+    [testenv:clean]
+      deps = coverage
+      skip_install = true
+      commands = coverage erase
     [gh]
     python =
         3.12 = py312

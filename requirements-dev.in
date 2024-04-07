@@ -4,6 +4,7 @@ ipdb
 ipython
 mypy
 pytest
+pytest-cov
 tox
 build
 twine
