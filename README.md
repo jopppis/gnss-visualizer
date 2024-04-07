@@ -27,8 +27,6 @@
     ·
     <a href="https://github.com/jopppis/gnss-visualizer/issues">Request Feature</a>
   </p>
-  <br />
-  [![codecov](https://codecov.io/github/jopppis/gnss-visualizer/graph/badge.svg?token=LXHBJ53VP1)](https://codecov.io/github/jopppis/gnss-visualizer)
 </div>
 
 
@@ -71,6 +69,7 @@ The tool is still in very early development so don't expect much just yet!
 
 GNSS receivers collect lots of information about the satellites and the signals they observe which can help to understand the quality of the positioning solution and the behavior of the receiver. Vast amounts of this data make it sometimes difficult to take proper advantage of it. GNSS visualizer aims to make this easier by providing easy to use tool that can be used to explore the data.
 
+[![codecov](https://codecov.io/github/jopppis/gnss-visualizer/graph/badge.svg?token=LXHBJ53VP1)](https://codecov.io/github/jopppis/gnss-visualizer)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
