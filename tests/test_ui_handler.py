@@ -97,21 +97,3 @@ def test_update_layout_no_plots(ui_handler: UIHandler):
     ui_handler.update_layout()
     assert len(ui_handler._main_column.children) == 0
     assert len(ui_handler._side_column.children) == 0
-
-
-# def test_update_plot(ui_handler: UIHandler):
-#     """Test the update_plot method."""
-#     plot_mock = MagicMock(initialized=False)
-#     msg_mock = MagicMock()
-#     ui_handler.update_plot(plot_mock, msg_mock)
-#     plot_mock.update_plot.assert_called_once_with(msg_mock)
-#     ui_handler.update_layout.assert_called_once()
-
-
-# def test_get_plots_for_msg(ui_handler: UIHandler):
-#     """Test the get_plots_for_msg method."""
-#     plot_mock = MagicMock(can_handle_msg=MagicMock(return_value=True))
-#     ui_handler.available_plots = [plot_mock]
-#     plots = ui_handler.get_plots_for_msg("msg_str")
-#     assert len(plots) == 1
-#     assert plots[0] == plot_mock
