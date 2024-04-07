@@ -12,6 +12,7 @@ repos:
       rev: 'v1.9.0'  # Use the sha / tag you want to point at
       hooks:
       -   id: mypy
+          files: src/.*\.py$
           additional_dependencies:
             - pandas-stubs
             - types-Pillow
@@ -22,6 +23,7 @@ repos:
             - types-pycurl
             - types-six
             - pytest
+            - pyproj
             - bokeh
             - pyubx2
             - serial

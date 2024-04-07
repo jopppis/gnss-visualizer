@@ -71,10 +71,10 @@ def test_callback_invocation(
 ) -> None:
     """Test if the callback function is correctly invoked with the expected message."""
     ubx_stream_reader.read()
-    ubx_stream_reader.process_msg_callback.assert_called_once()
+    ubx_stream_reader.process_msg_callback.assert_called_once()  # type: ignore[attr-defined]
     # check that process_msg callback had the expected arguments
-    msg: pyubx2.UBXMessage = ubx_stream_reader.process_msg_callback.call_args[0][0]
-    msg_str = ubx_stream_reader.process_msg_callback.call_args[0][1]
+    msg: pyubx2.UBXMessage = ubx_stream_reader.process_msg_callback.call_args[0][0]  # type: ignore[attr-defined]
+    msg_str = ubx_stream_reader.process_msg_callback.call_args[0][1]  # type: ignore[attr-defined]
     assert msg.serialize() == nav_pvt_message_bytes
     assert msg_str == "UBX-NAV-PVT"
 
