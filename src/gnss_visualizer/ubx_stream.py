@@ -120,13 +120,13 @@ class UbxStreamReader:
         """Read UBX stream from a stream."""
         ubr = pyubx2.UBXReader(stream, protfilter=pyubx2.UBX_PROTOCOL)
         while True:
-            # yield some time to other threads when reading files
             if self.file.is_file():
+                # yield some time to other threads when reading files
                 sleep(0.01)
+                # rewind if requested
+                self._check_and_rewind_file_stream(stream)
 
             msg = ubr.read()[1]
-
-            self._check_and_rewind_file_stream(stream)
 
             if msg is None:
                 # stream ended
