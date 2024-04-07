@@ -49,44 +49,55 @@ exclude = ["tests/"]
 
 [[tool.mypy.overrides]]
 module = [
-    "pyubx2",
-    "xyzservices",
-    "xyzservices.providers",
-    "serial"
+  "pyubx2",
+  "xyzservices",
+  "xyzservices.providers",
+  "serial"
 ]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 testpaths = [
-    "tests",
+  "tests",
 ]
 
 [tool.coverage.run]
-    include = [
-        "src/*",
-    ]
+include = [
+  "src/*",
+]
 
 [tool.tox]
 legacy_tox_ini = """
-    [tox]
-    min_version = 4.0
-    env_list =
-        py310
-        py311
-        py312
+  [tox]
+  min_version = 4.0
+  env_list =
+    clean
+    py310
+    py311
+    py312
+    report
 
-    [testenv]
-    deps =
-      pytest
-      pytest-cov
-    commands = pytest --cov --cov-append --cov-report=term-missing
-    [testenv:clean]
-      deps = coverage
-      skip_install = true
-      commands = coverage erase
-    [gh]
-    python =
-        3.12 = py312
-        3.11 = py311
-        3.10 = py310
+  [testenv]
+  deps =
+    pytest
+    pytest-cov
+  depends =
+    {py310,py311,py312}: clean
+    report: py310,py311,py312
+  commands = pytest --cov --cov-append --cov-report=term-missing
+  [testenv:clean]
+  deps = coverage
+  skip_install = true
+  commands = coverage erase
+  [testenv:report]
+  deps = coverage
+  skip_install = true
+  commands =
+      coverage report
+      coverage html
+  [gh]
+  python =
+    3.12 = py312
+    3.11 = py311
+    3.10 = py310
 """
