@@ -16,21 +16,25 @@ def mock_ubx_stream_reader() -> MagicMock:
 
 
 @pytest.fixture
-def ui_handler(mock_ubx_stream_reader: UbxStreamReader) -> UIHandler:
+def ui_handler(nav_pvt_message_file: Path) -> UIHandler:
     """Fixture to create a UIHandler instance with mocked dependencies."""
+    handler = UIHandler(nav_pvt_message_file)
+    return handler
+
+
+def test_initialization(
+    mock_ubx_stream_reader: MagicMock, nav_pvt_message_file: Path
+) -> None:
+    """Test that the UIHandler is correctly initialized."""
     with patch(
         "gnss_visualizer.ui_handler.UbxStreamReader",
         return_value=mock_ubx_stream_reader,
     ):
-        handler = UIHandler(Path("input_path"))
-    return handler
+        handler = UIHandler(nav_pvt_message_file)
 
-
-def test_initialization(ui_handler: UIHandler) -> None:
-    """Test that the UIHandler is correctly initialized."""
-    assert ui_handler.input == Path("input_path")
-    assert isinstance(ui_handler.doc, Document)
-    ui_handler.stream_reader.read.assert_called_once()  # type: ignore[attr-defined]
+        assert handler.input == nav_pvt_message_file
+        assert isinstance(handler.doc, Document)
+        handler.stream_reader.read.assert_called_once()  # type: ignore[attr-defined]
 
 
 def test_initial_selected_plots(ui_handler: UIHandler) -> None:
@@ -56,8 +60,10 @@ def test_get_wait_time(ui_handler: UIHandler) -> None:
 def test_read_input(
     ui_handler: UIHandler, mock_ubx_stream_reader: UbxStreamReader
 ) -> None:
-    """Test that the file is initially read."""
-    mock_ubx_stream_reader.read.assert_called_once()  # type: ignore[attr-defined]
+    """Test that the file reading is triggered when requested."""
+    with patch("gnss_visualizer.ubx_stream.UbxStreamReader.read") as read_mock:
+        ui_handler.read_input()
+        read_mock.assert_called_once()
 
 
 def test_process_msg(ui_handler: UIHandler) -> None:
@@ -75,6 +81,15 @@ def test_process_msg(ui_handler: UIHandler) -> None:
 
         # Assert that add_next_tick_callback was called once
         mock_add_next_tick_callback.assert_called_once()
+
+
+def test_rewind_file(ui_handler: UIHandler) -> None:
+    """Test the rewind_file method."""
+    with patch(
+        "gnss_visualizer.ui_handler.UbxStreamReader.rewind_file",
+    ):
+        ui_handler.rewind_file()
+        ui_handler.stream_reader.rewind_file.assert_called_once()
 
 
 # def test_update_layout(ui_handler: UIHandler):
