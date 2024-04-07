@@ -7,6 +7,7 @@ from unittest.mock import MagicMock
 import pytest
 import pyubx2
 from gnss_visualizer.ubx_stream import UbxStreamReader
+from serial import SerialException
 
 # from serial import SerialException
 
@@ -90,16 +91,14 @@ def test_rewind_file_stream(ubx_stream_reader: UbxStreamReader) -> None:
     assert ubx_stream_reader._rewind_requested
 
 
-# def test_serial_exception_handling(tmp_path):
-#     file_path = tmp_path / "device"
-#     reader = UbxStreamReader(
-#         file_path, MagicMock(), MagicMock(return_value=set()), MagicMock(return_value=0)
-#     )
+def test_read_device_nonexistent(nav_pvt_message_bytes: bytes) -> None:
+    """Test if the read_device method reads from the device."""
+    ubx_stream_reader = UbxStreamReader(
+        Path("/dev/ttyUSB69"),
+        MagicMock(),
+        MagicMock(return_value={"UBX-NAV-PVT"}),
+        MagicMock(return_value=0.1),
+    )
 
-#     with patch("your_module.Serial", side_effect=SerialException("Test exception")):
-#         with patch("your_module.sleep", return_value=None) as mock_sleep:
-#             reader._read_ubx_device()
-#             mock_sleep.assert_called()
-
-
-# Additional tests can be created following similar patterns to cover more scenarios and edge cases.
+    with pytest.raises(SerialException):
+        ubx_stream_reader.read(stop_on_serial_failure=True)

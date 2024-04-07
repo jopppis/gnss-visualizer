@@ -32,13 +32,13 @@ class UbxStreamReader:
         self._rewind_requested = False
         self.lock = Lock()
 
-    def read(self) -> None:
+    def read(self, stop_on_serial_failure: bool = False) -> None:
         """Read ubx from file or device."""
         if self.file.is_file():
             self._read_ubx_file()
             return
 
-        self._read_ubx_device()
+        self._read_ubx_device(stop_on_serial_failure)
 
     def read_messages_of_type(self, msg_type: str) -> None:
         """Read UBX messages of a given type."""
@@ -103,7 +103,7 @@ class UbxStreamReader:
         with self.file.open("rb") as f:
             self._read_ubx_stream(f)
 
-    def _read_ubx_device(self) -> None:
+    def _read_ubx_device(self, stop_on_serial_failure: bool = False) -> None:
         """Read UBX from a device."""
         LOGGER.info(f"Reading UBX from device {self.file}")
 
@@ -114,6 +114,8 @@ class UbxStreamReader:
                     self._read_ubx_stream(ser)
             except SerialException as e:
                 LOGGER.error(f"Serial exception: {e}")
+                if stop_on_serial_failure:
+                    raise e
                 sleep(1)
 
     def _read_ubx_stream(self, stream: io.IOBase) -> None:
