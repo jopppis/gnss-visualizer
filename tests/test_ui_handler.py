@@ -96,4 +96,4 @@ def test_update_layout_no_plots(ui_handler: UIHandler):
     """Test the update_layout method."""
     ui_handler.update_layout()
     assert len(ui_handler._main_column.children) == 0
-    assert len(ui_handler._side_column.children) == 0
+    assert len(ui_handler._side_column.children) == 2
