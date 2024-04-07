@@ -8,7 +8,6 @@
 [![Issues][issues-shield]][issues-url]
 [![AGPL-3.0 License][license-shield]][license-url]
 [![LinkedIn][linkedin-shield]][linkedin-url]
-[![codecov](https://codecov.io/github/jopppis/gnss-visualizer/graph/badge.svg?token=LXHBJ53VP1)](https://codecov.io/github/jopppis/gnss-visualizer)
 
 <br />
 <div align="center">
@@ -28,6 +27,8 @@
     ·
     <a href="https://github.com/jopppis/gnss-visualizer/issues">Request Feature</a>
   </p>
+  <br />
+  [![codecov](https://codecov.io/github/jopppis/gnss-visualizer/graph/badge.svg?token=LXHBJ53VP1)](https://codecov.io/github/jopppis/gnss-visualizer)
 </div>
 
 
