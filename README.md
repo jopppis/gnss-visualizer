@@ -36,6 +36,7 @@
     <li>
       <a href="#about-the-project">About the project</a>
       <ul>
+        <li><a href="#project-status">Project status</a></li>
         <li><a href="#built-with">Built with</a></li>
       </ul>
     </li>
@@ -75,9 +76,12 @@ GNSS receivers collect lots of information about the satellites and the signals 
 
 ### Project status
 
+
+
 [![codecov](https://codecov.io/github/jopppis/gnss-visualizer/graph/badge.svg?token=LXHBJ53VP1)](https://codecov.io/github/jopppis/gnss-visualizer)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 ### Built with
 
