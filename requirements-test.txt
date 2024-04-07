@@ -1,2 +1,2 @@
+-c requirements-dev.txt
 --editable .
---c requirements-dev.txt
