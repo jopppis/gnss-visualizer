@@ -40,6 +40,17 @@ jobs:
         run: tox -vv --notest
       - name: Run test suite
         run: tox --skip-pkg-install
+  coverage:
+    name: test coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup python for coverage
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
       - name: Install requirements
         run: pip install -r requirements.txt -r requirements-dev.txt
       - name: Run tests and collect coverage
