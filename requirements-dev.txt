@@ -35,7 +35,7 @@ filelock==3.13.3
     #   virtualenv
 idna==3.6
     # via requests
-importlib-metadata==7.1.0
+importlib-metadata==8.0.0
     # via twine
 iniconfig==2.0.0
     # via pytest
@@ -71,7 +71,7 @@ mypy-extensions==1.0.0
     # via mypy
 nh3==0.2.17
     # via readme-renderer
-numpy==1.26.4
+numpy==2.0.0
     # via pandas-stubs
 packaging==24.0
     # via
@@ -150,7 +150,7 @@ types-pygments==2.17.0.20240310
 types-pytz==2024.1.0.20240203
     # via pandas-stubs
 types-pyyaml==6.0.12.20240311
-types-setuptools==69.2.0.20240317
+types-setuptools==70.1.0.20240627
     # via types-pygments
 types-six==1.16.21.20240311
 typing-extensions==4.11.0
