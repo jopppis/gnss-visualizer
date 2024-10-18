@@ -7,9 +7,9 @@ contourpy==1.2.1
     # via bokeh
 jinja2==3.1.3
     # via bokeh
-markupsafe==2.1.5
+markupsafe==3.0.2
     # via jinja2
-numpy==1.26.4
+numpy==2.1.2
     # via
     #   bokeh
     #   contourpy
@@ -18,7 +18,7 @@ packaging==24.0
     # via bokeh
 pandas==2.2.1
     # via bokeh
-pillow==10.3.0
+pillow==11.0.0
     # via bokeh
 pynmeagps==1.0.35
     # via pyubx2
