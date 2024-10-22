@@ -2,51 +2,51 @@
 #    uv pip compile /home/jop/dev/gnss-visualizer/requirements-dev.in
 asttokens==2.4.1
     # via stack-data
-build==1.2.1
-cachetools==5.3.3
+build==1.2.2.post1
+cachetools==5.5.0
     # via tox
-certifi==2024.2.2
+certifi==2024.8.30
     # via requests
-cffi==1.16.0
+cffi==1.17.1
     # via cryptography
 chardet==5.2.0
     # via tox
-charset-normalizer==3.3.2
+charset-normalizer==3.4.0
     # via requests
 colorama==0.4.6
     # via tox
-coverage==7.4.4
+coverage==7.6.4
     # via pytest-cov
-cryptography==42.0.5
+cryptography==42.0.8
     # via secretstorage
 decorator==5.1.1
     # via
     #   ipdb
     #   ipython
-distlib==0.3.8
+distlib==0.3.9
     # via virtualenv
-docutils==0.20.1
+docutils==0.21.2
     # via readme-renderer
-executing==2.0.1
+executing==2.1.0
     # via stack-data
-filelock==3.13.3
+filelock==3.16.1
     # via
     #   tox
     #   virtualenv
-idna==3.6
+idna==3.10
     # via requests
-importlib-metadata==7.1.0
+importlib-metadata==7.2.1
     # via twine
 iniconfig==2.0.0
     # via pytest
 ipdb==0.13.13
-ipython==8.23.0
+ipython==8.28.0
     # via ipdb
 jaraco-classes==3.4.0
     # via keyring
-jaraco-context==5.2.0
+jaraco-context==5.3.0
     # via keyring
-jaraco-functools==4.0.0
+jaraco-functools==4.1.0
     # via keyring
 jedi==0.19.1
     # via ipython
@@ -54,70 +54,70 @@ jeepney==0.8.0
     # via
     #   keyring
     #   secretstorage
-keyring==25.1.0
+keyring==25.4.1
     # via twine
 markdown-it-py==3.0.0
     # via rich
-matplotlib-inline==0.1.6
+matplotlib-inline==0.1.7
     # via ipython
 mdurl==0.1.2
     # via markdown-it-py
-more-itertools==10.2.0
+more-itertools==10.5.0
     # via
     #   jaraco-classes
     #   jaraco-functools
-mypy==1.9.0
+mypy==1.13.0
 mypy-extensions==1.0.0
     # via mypy
-nh3==0.2.17
+nh3==0.2.18
     # via readme-renderer
 numpy==1.26.4
     # via pandas-stubs
-packaging==24.0
+packaging==24.1
     # via
     #   build
     #   pyproject-api
     #   pytest
     #   tox
-pandas-stubs==2.2.1.240316
+pandas-stubs==2.2.3.241009
 parso==0.8.4
     # via jedi
 pexpect==4.9.0
     # via ipython
-pip==24.0
-pkginfo==1.10.0
+pip==24.2
+pkginfo==1.11.2
     # via twine
-platformdirs==4.2.0
+platformdirs==4.3.6
     # via
     #   tox
     #   virtualenv
-pluggy==1.4.0
+pluggy==1.5.0
     # via
     #   pytest
     #   tox
-prompt-toolkit==3.0.43
+prompt-toolkit==3.0.48
     # via ipython
 ptyprocess==0.7.0
     # via pexpect
-pure-eval==0.2.2
+pure-eval==0.2.3
     # via stack-data
 pycparser==2.22
     # via cffi
-pygments==2.17.2
+pygments==2.18.0
     # via
     #   ipython
     #   readme-renderer
     #   rich
-pyproject-api==1.6.1
+pyproject-api==1.8.0
     # via tox
-pyproject-hooks==1.0.0
+pyproject-hooks==1.2.0
     # via build
-pytest==8.1.1
+pytest==8.3.3
     # via pytest-cov
 pytest-cov==5.0.0
 readme-renderer==43.0
     # via twine
-requests==2.31.0
+requests==2.32.3
     # via
     #   requests-toolbelt
     #   twine
@@ -125,7 +125,7 @@ requests-toolbelt==1.0.0
     # via twine
 rfc3986==2.0.0
     # via twine
-rich==13.7.1
+rich==13.9.3
     # via twine
 secretstorage==3.3.3
     # via keyring
@@ -133,35 +133,35 @@ six==1.16.0
     # via asttokens
 stack-data==0.6.3
     # via ipython
-tox==4.14.2
-traitlets==5.14.2
+tox==4.23.2
+traitlets==5.14.3
     # via
     #   ipython
     #   matplotlib-inline
-twine==5.0.0
+twine==5.1.1
 types-colorama==0.4.15.20240311
 types-decorator==5.1.8.20240310
-types-docutils==0.20.0.20240406
+types-docutils==0.21.0.20241005
     # via types-pygments
-types-openpyxl==3.1.0.20240402
-types-pillow==10.2.0.20240406
-types-pycurl==7.45.2.20240311
-types-pygments==2.17.0.20240310
-types-pytz==2024.1.0.20240203
+types-openpyxl==3.1.5.20241020
+types-pillow==10.2.0.20240822
+types-pycurl==7.45.3.20240421
+types-pygments==2.18.0.20240506
+types-pytz==2024.2.0.20241003
     # via pandas-stubs
-types-pyyaml==6.0.12.20240311
-types-setuptools==69.2.0.20240317
+types-pyyaml==6.0.12.20240917
+types-setuptools==69.5.0.20240522
     # via types-pygments
-types-six==1.16.21.20240311
-typing-extensions==4.11.0
+types-six==1.16.21.20241009
+typing-extensions==4.12.2
     # via mypy
-urllib3==2.2.1
+urllib3==2.2.3
     # via
     #   requests
     #   twine
-virtualenv==20.25.1
+virtualenv==20.27.0
     # via tox
 wcwidth==0.2.13
     # via prompt-toolkit
-zipp==3.18.1
+zipp==3.20.2
     # via importlib-metadata
