@@ -5,8 +5,8 @@ on:
       - main
       - 'releases/**'
   pull_request:
-  schedule:
-    - cron: "0 8 * * *"
+  #schedule:
+  #  - cron: "0 8 * * *"
 
 concurrency:
   group: check-${{ github.ref }}
